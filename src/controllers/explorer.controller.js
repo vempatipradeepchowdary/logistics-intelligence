@@ -19,8 +19,7 @@ export const facility = async (req, res) =>
   sendOk(res, await getFacility(req.valid.params.id, req.valid.query));
 export const disruptions = async (req, res) => page(res, await listDisruptions(req.valid.query));
 export const disruptionsTimeline = async (_req, res) => sendOk(res, await disruptionTimeline());
-export const disruption = async (req, res) =>
-  sendOk(res, await getDisruption(req.valid.params.id));
+export const disruption = async (req, res) => sendOk(res, await getDisruption(req.valid.params.id));
 export const etas = async (req, res) => page(res, await listEtas(req.valid.query));
 export const eta = async (req, res) => sendOk(res, await getEta(req.valid.params.id));
 export const exportsList = async (_req, res) => {

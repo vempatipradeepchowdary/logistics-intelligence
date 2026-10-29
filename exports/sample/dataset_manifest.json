@@ -1,0 +1,628 @@
+{
+  "manifestId": "MAN-mvt13gh2-20261022",
+  "status": "COMPLETED",
+  "seed": 20261022,
+  "profile": "tiny",
+  "config": {
+    "profile": "tiny",
+    "seed": 20261022,
+    "shipments": 600,
+    "trackingEvents": 3600,
+    "facilities": 100,
+    "weatherEvents": 120,
+    "simulationStart": "2026-01-01T00:00:00Z",
+    "simulationDays": 21,
+    "anomalyCasesPerVariant": 2,
+    "batchSize": 1000
+  },
+  "configHash": "3ddb8acb043789521511c2d165aef033a9582c39509de3ce04301b0a4a0e3922",
+  "softwareVersion": "1.0.0",
+  "generatorVersion": "synthgen-v1.0.0",
+  "etaAlgorithmVersion": "eta-rules-v1.0.0",
+  "etaConfigHash": "5e7df0dcdf5336a068e8e7393f55b13f763041d8e5daa4bf0e3e81622856ee29",
+  "environment": {
+    "node": "v22.17.0",
+    "mongodb": "8.0.1",
+    "platform": "win32"
+  },
+  "generationStartedAt": "2026-10-29T04:13:42.568Z",
+  "generationCompletedAt": "2026-10-29T04:13:51.498Z",
+  "calibration": {
+    "naturalEventCount": 3526,
+    "targetEventCount": 3600,
+    "adjustment": 74,
+    "shipmentsAdjusted": 74,
+    "method": "Optional departure scans toggled round-robin over a seeded permutation of shipments"
+  },
+  "recordCounts": {
+    "carriers": {
+      "total": 8,
+      "baseline": 8,
+      "anomaly": 0
+    },
+    "service_levels": {
+      "total": 4,
+      "baseline": 4,
+      "anomaly": 0
+    },
+    "facilities": {
+      "total": 100,
+      "baseline": 100,
+      "anomaly": 0
+    },
+    "routes": {
+      "total": 9326,
+      "baseline": 9326,
+      "anomaly": 0
+    },
+    "weather_events": {
+      "total": 120,
+      "baseline": 120,
+      "anomaly": 0
+    },
+    "facility_queues": {
+      "total": 12600,
+      "baseline": 12600,
+      "anomaly": 0
+    },
+    "shipments": {
+      "total": 628,
+      "baseline": 600,
+      "anomaly": 28
+    },
+    "shipment_legs": {
+      "total": 1892,
+      "baseline": 1808,
+      "anomaly": 84
+    },
+    "tracking_events": {
+      "total": 3783,
+      "baseline": 3600,
+      "anomaly": 183
+    },
+    "eta_estimates": {
+      "total": 1696,
+      "baseline": 1600,
+      "anomaly": 96
+    },
+    "delay_reasons": {
+      "total": 15,
+      "baseline": 12,
+      "anomaly": 3
+    },
+    "ground_truth": {
+      "total": 628,
+      "baseline": 600,
+      "anomaly": 28
+    },
+    "anomaly_cases": {
+      "total": 30,
+      "baseline": 30,
+      "anomaly": 0
+    }
+  },
+  "targetCounts": {
+    "shipments": {
+      "target": 600,
+      "actual": 600,
+      "ok": true
+    },
+    "trackingEvents": {
+      "target": 3600,
+      "actual": 3600,
+      "ok": true
+    },
+    "facilities": {
+      "target": 100,
+      "actual": 100,
+      "ok": true
+    },
+    "disruptionWindows": {
+      "target": 120,
+      "actual": 120,
+      "ok": true
+    }
+  },
+  "checksums": {
+    "carriers": {
+      "sha256": "76d92fccb145ae5ff1e520df285afcf4b5b113106298841e556e0680ff58fe64",
+      "count": 8
+    },
+    "service_levels": {
+      "sha256": "d5129b1e496fb58eed9e2a070df756e78dddc939f9cff05743b54f783296cc29",
+      "count": 4
+    },
+    "facilities": {
+      "sha256": "1b5f793b32ea7b05cd59377314ff6e18b6b009002d8a4ad8b3a26db0a45549ea",
+      "count": 100
+    },
+    "routes": {
+      "sha256": "25f7aa46cac3de7283bbe23e1f3e1b22f8b949abc99036aa9905317b5d861eef",
+      "count": 9326
+    },
+    "weather_events": {
+      "sha256": "1ee0bcabbca3705a458f94e53baa7fde0bd63aa05347c07656db9539804e7477",
+      "count": 120
+    },
+    "facility_queues": {
+      "sha256": "4b02930b8e3fcd9705b5fdd1364e64554ea4a6bbaf746dfa48ea8605509ce594",
+      "count": 12600
+    },
+    "shipments": {
+      "sha256": "54988627828cb6fbe87635f7071f2438dc411be7bad7f277a67861fec926dfad",
+      "count": 628
+    },
+    "shipment_legs": {
+      "sha256": "664b6195a73e92e6d546b8ff69e22c3b09fb294b6d4512e660ddda099a1dfeb1",
+      "count": 1892
+    },
+    "tracking_events": {
+      "sha256": "d52092f33b05cbbdac02836f40de52cd2ca2fd60dc18a3d614c06931dca5db8a",
+      "count": 3783
+    },
+    "eta_estimates": {
+      "sha256": "39d673b780900fac1a42cd4d7f090e552777f513163cae97c981c6d4dc4a1ceb",
+      "count": 1696
+    },
+    "delay_reasons": {
+      "sha256": "a5d323e02d491353a03572e194fb92a6cd4bd6b88a3ab98122ad2556d6128648",
+      "count": 15
+    },
+    "ground_truth": {
+      "sha256": "42cc63232e55724cbf66ff726ac82aad5235d077edb2947c52fbbbd5fd2230f0",
+      "count": 628
+    },
+    "anomaly_cases": {
+      "sha256": "88056619873f4ac72591d9ea67ac281c0e15cf1dce5309161296d7656815edcc",
+      "count": 30
+    }
+  },
+  "datasetChecksum": "ae3ae103508713ac1e3f39318c0135519af41d8f7302412697ceb05213d63f19",
+  "edgeCaseCatalog": [
+    {
+      "category": "ON_TIME_DELIVERY",
+      "description": "Delivered on or before the SLA deadline",
+      "shipmentIds": [
+        "SHP-2026-000001",
+        "SHP-2026-000002",
+        "SHP-2026-000003"
+      ],
+      "expectedOutcome": "VALID: no ERROR or CRITICAL validation failures"
+    },
+    {
+      "category": "LATE_DELIVERY",
+      "description": "Delivered after the SLA deadline (with delay attribution)",
+      "shipmentIds": [
+        "SHP-2026-000017",
+        "SHP-2026-000099",
+        "SHP-2026-000146"
+      ],
+      "expectedOutcome": "VALID: no ERROR or CRITICAL validation failures"
+    },
+    {
+      "category": "ROUTE_CHANGE",
+      "description": "Rerouted at the origin hub (weather avoidance or linehaul capacity)",
+      "shipmentIds": [
+        "SHP-2026-000008",
+        "SHP-2026-000020",
+        "SHP-2026-000040"
+      ],
+      "expectedOutcome": "VALID: no ERROR or CRITICAL validation failures"
+    },
+    {
+      "category": "DELAYED_SCAN",
+      "description": "Scans ingested 1-5h after they occurred (below the 6h late-arrival threshold)",
+      "shipmentIds": [
+        "SHP-2026-000003",
+        "SHP-2026-000006",
+        "SHP-2026-000010"
+      ],
+      "expectedOutcome": "VALID: no ERROR or CRITICAL validation failures"
+    },
+    {
+      "category": "DELIVERY_ATTEMPT_FAILED",
+      "description": "Failed first delivery attempt followed by a successful retry",
+      "shipmentIds": [
+        "SHP-2026-000075",
+        "SHP-2026-000198",
+        "SHP-2026-000322"
+      ],
+      "expectedOutcome": "VALID: no ERROR or CRITICAL validation failures"
+    },
+    {
+      "category": "OPEN_OPERATIONAL_EXCEPTION",
+      "description": "Package held after a DAMAGED exception",
+      "shipmentIds": [
+        "SHP-2026-000205"
+      ],
+      "expectedOutcome": "VALID: no ERROR or CRITICAL validation failures"
+    },
+    {
+      "category": "INSUFFICIENT_DATA",
+      "description": "Tendered but never picked up; outcome cannot be established",
+      "shipmentIds": [
+        "SHP-2026-000096",
+        "SHP-2026-000101"
+      ],
+      "expectedOutcome": "VALID: no ERROR or CRITICAL validation failures"
+    },
+    {
+      "category": "AT_RISK",
+      "description": "In transit with an ETA close to or past the deadline",
+      "shipmentIds": [],
+      "expectedOutcome": "VALID: no ERROR or CRITICAL validation failures"
+    },
+    {
+      "category": "WEATHER_DELAY",
+      "description": "Late delivery primarily attributed to a weather disruption",
+      "shipmentIds": [
+        "SHP-2026-000017",
+        "SHP-2026-000099"
+      ],
+      "expectedOutcome": "VALID: no ERROR or CRITICAL validation failures"
+    }
+  ],
+  "error": null,
+  "createdAt": "2026-10-29T04:13:42.575Z",
+  "updatedAt": "2026-10-29T04:13:51.498Z",
+  "simulationWindow": {
+    "start": "2026-01-01T00:00:00.000Z",
+    "asOf": "2026-01-22T00:00:00.000Z",
+    "days": 21
+  },
+  "exports": {
+    "exportedAt": "2026-10-29T04:21:35.724Z",
+    "label": "sample",
+    "timezone": "UTC (ISO-8601)",
+    "encoding": "UTF-8, RFC 4180 CSV, CRLF line endings, header row",
+    "conventions": "string arrays are pipe-joined; nested object arrays (route stops/legs) are JSON in one cell; empty cell = null",
+    "validationRunId": "VAL-mvt1dj5o",
+    "files": [
+      {
+        "file": "carriers.csv",
+        "collection": "carriers",
+        "format": "csv",
+        "rows": 8,
+        "bytes": 1026,
+        "sha256": "405d4db055672ad1fbf46ce7e63b98ac519a2e720a865b1a2d49bbc58cfb2311",
+        "columns": [
+          "carrierId",
+          "name",
+          "code",
+          "mode",
+          "supportedServiceLevelIds",
+          "transitTimeFactor",
+          "transitVariability",
+          "scanComplianceRate",
+          "ediBatchShare",
+          "onTimePickupRate",
+          "marketShareWeight",
+          "active"
+        ]
+      },
+      {
+        "file": "service_levels.csv",
+        "collection": "service_levels",
+        "format": "csv",
+        "rows": 4,
+        "bytes": 474,
+        "sha256": "561a0cedf8d213a8574fea7e5d4bcc3426533a0e793979730b11dac50c7da808",
+        "columns": [
+          "serviceLevelId",
+          "name",
+          "transportMode",
+          "transitDaysByZone.Z1",
+          "transitDaysByZone.Z2",
+          "transitDaysByZone.Z3",
+          "transitDaysByZone.Z4",
+          "pickupCutoffMinuteUtc",
+          "deadlineMinuteUtc",
+          "handlingFactor",
+          "atRiskBufferMinutes",
+          "priority",
+          "mixWeight"
+        ]
+      },
+      {
+        "file": "facilities.csv",
+        "collection": "facilities",
+        "format": "csv",
+        "rows": 100,
+        "bytes": 13183,
+        "sha256": "8cde7d5edd97075d2db4d37bc1e7af8da5df3d60d36c7f9784be68cf424b2cc4",
+        "columns": [
+          "facilityId",
+          "name",
+          "type",
+          "city",
+          "stateCode",
+          "region",
+          "latitude",
+          "longitude",
+          "timezone",
+          "parentHubId",
+          "capacityPerHour",
+          "baseProcessingMinutes",
+          "baselineQueueWaitMinutes",
+          "operatingStatus"
+        ]
+      },
+      {
+        "file": "routes.csv",
+        "collection": "routes",
+        "format": "csv",
+        "rows": 9326,
+        "bytes": 6606713,
+        "sha256": "c20eadacd5a6eca55006be594766e1a6ef188c85daa079643513a4ea4b77f922",
+        "columns": [
+          "routeId",
+          "version",
+          "routeType",
+          "primaryRouteId",
+          "originFacilityId",
+          "destinationFacilityId",
+          "totalDistanceKm",
+          "distanceZone",
+          "effectiveFrom",
+          "stops",
+          "legs"
+        ]
+      },
+      {
+        "file": "weather_events.csv",
+        "collection": "weather_events",
+        "format": "csv",
+        "rows": 120,
+        "bytes": 22141,
+        "sha256": "bdf3fd94131d6393b99991d3d63f094cf6016c65620a809166b282d20aab20a7",
+        "columns": [
+          "weatherEventId",
+          "weatherType",
+          "severity",
+          "advisoryType",
+          "centerFacilityId",
+          "affectedFacilityIds",
+          "radiusKm",
+          "startAt",
+          "endAt",
+          "issuedAt",
+          "ingestedAt",
+          "expectedDelayMinutes",
+          "transitSlowdownPct"
+        ]
+      },
+      {
+        "file": "facility_queues.csv",
+        "collection": "facility_queues",
+        "format": "csv",
+        "rows": 12600,
+        "bytes": 1433785,
+        "sha256": "1c53b455c3aeed336d0e8edc91693ed0224986dfec1ad13410f5289117334339",
+        "columns": [
+          "queueObservationId",
+          "facilityId",
+          "observedAt",
+          "ingestedAt",
+          "windowMinutes",
+          "queueLength",
+          "throughputPerHour",
+          "utilizationPct",
+          "estimatedWaitMinutes",
+          "baselineWaitMinutes",
+          "congestionLevel",
+          "activeWeatherEventIds"
+        ]
+      },
+      {
+        "file": "shipments.csv",
+        "collection": "shipments",
+        "format": "csv",
+        "rows": 628,
+        "bytes": 231090,
+        "sha256": "372a82eab507babafcefbc38953848aa4ecc73770133fb6c064b3590efb98bdf",
+        "columns": [
+          "shipmentId",
+          "sequence",
+          "partition",
+          "carrierId",
+          "serviceLevelId",
+          "originFacilityId",
+          "destinationFacilityId",
+          "plannedRouteId",
+          "currentRouteId",
+          "distanceZone",
+          "createdAt",
+          "plannedPickupAt",
+          "promisedDeliveryAt",
+          "pickedUpAt",
+          "deliveredAt",
+          "status",
+          "statusUpdatedAt",
+          "weightKg",
+          "pieces",
+          "routeChange.occurredAt",
+          "routeChange.atFacilityId",
+          "routeChange.reason",
+          "routeChange.fromRouteId",
+          "routeChange.toRouteId",
+          "routeChange.extraPlannedMinutes",
+          "lastMile.arrivedAtStationAt",
+          "lastMile.readyAt",
+          "lastMile.plannedDwellMinutes",
+          "lastMile.queueMinutes",
+          "lastMile.weatherMinutes",
+          "lastMile.weatherEventIds",
+          "lastMile.firstOutForDeliveryAt",
+          "lastMile.attemptFailed",
+          "lastMile.attemptDelayMinutes",
+          "dataAsOf"
+        ]
+      },
+      {
+        "file": "shipment_legs.csv",
+        "collection": "shipment_legs",
+        "format": "csv",
+        "rows": 1892,
+        "bytes": 371353,
+        "sha256": "5d91a7b6dadde810757f8eb2f7b662de06b92661cdabc9d2b636621f70087e16",
+        "columns": [
+          "legId",
+          "shipmentId",
+          "partition",
+          "sequence",
+          "routeId",
+          "routeLegSequence",
+          "fromFacilityId",
+          "toFacilityId",
+          "transportMode",
+          "status",
+          "distanceKm",
+          "plannedDwellMinutes",
+          "plannedTransitMinutes",
+          "actualStartAt",
+          "actualDepartureAt",
+          "actualArrivalAt",
+          "actualDwellMinutes",
+          "actualTransitMinutes",
+          "delayBreakdown.queueMinutes",
+          "delayBreakdown.weatherMinutes",
+          "delayBreakdown.carrierMinutes",
+          "weatherEventIds",
+          "cancelledAt"
+        ]
+      },
+      {
+        "file": "tracking_events.csv",
+        "collection": "tracking_events",
+        "format": "csv",
+        "rows": 3783,
+        "bytes": 643859,
+        "sha256": "bd75f6d6ced5a77ad2e196d9fbd182484f3b6f4190aebe9465c5bde14f5cfca8",
+        "columns": [
+          "eventId",
+          "shipmentId",
+          "partition",
+          "legId",
+          "sequence",
+          "eventType",
+          "facilityId",
+          "occurredAt",
+          "ingestedAt",
+          "source",
+          "exceptionCode",
+          "routeChange.fromRouteId",
+          "routeChange.toRouteId",
+          "routeChange.reason"
+        ]
+      },
+      {
+        "file": "eta_estimates.csv",
+        "collection": "eta_estimates",
+        "format": "csv",
+        "rows": 1696,
+        "bytes": 907516,
+        "sha256": "cf80f1f39118dc2906111bb9697c6fea2f69c062a3463754c6ed55e61770eb96",
+        "columns": [
+          "etaId",
+          "shipmentId",
+          "partition",
+          "predictionAt",
+          "estimatedArrivalAt",
+          "algorithmVersion",
+          "configHash",
+          "inputHash",
+          "confidence",
+          "position.phase",
+          "position.routeId",
+          "position.stopIndex",
+          "position.facilityId",
+          "watermark.eventsConsidered",
+          "watermark.lastEventId",
+          "watermark.lastEventOccurredAt",
+          "watermark.maxEventIngestedAt",
+          "watermark.maxQueueIngestedAt",
+          "watermark.maxWeatherIngestedAt",
+          "inputs.eventIds",
+          "inputs.ignoredEventIds",
+          "inputs.queueObservationIds",
+          "inputs.weatherEventIds",
+          "inputs.remainingFacilityIds",
+          "inputs.carrierKnown",
+          "adjustments.baseRemainingMinutes",
+          "adjustments.queueMinutes",
+          "adjustments.weatherMinutes",
+          "adjustments.holdMinutes",
+          "adjustments.interactionMinutes",
+          "adjustments.totalRemainingMinutes",
+          "evaluation.actualArrivalAt",
+          "evaluation.errorMinutes",
+          "evaluation.absErrorMinutes",
+          "evaluation.horizonMinutes"
+        ]
+      },
+      {
+        "file": "delay_reasons.csv",
+        "collection": "delay_reasons",
+        "format": "csv",
+        "rows": 15,
+        "bytes": 2615,
+        "sha256": "a4ab92f4d713029a9b0087a0f107f6e347ae367c5f55a7d703371c89c6eafed2",
+        "columns": [
+          "delayId",
+          "shipmentId",
+          "partition",
+          "reasonCode",
+          "attributedMinutes",
+          "shipmentDelayMinutes",
+          "isPrimary",
+          "evidence.legIds",
+          "evidence.facilityIds",
+          "evidence.weatherEventIds",
+          "ruleVersion"
+        ]
+      },
+      {
+        "file": "ground_truth.csv",
+        "collection": "ground_truth",
+        "format": "csv",
+        "rows": 628,
+        "bytes": 138534,
+        "sha256": "2ad7cbff404af2874c23cf479bc5dfbd7ac00524aa0b9f1e90e4d913565d7622",
+        "columns": [
+          "groundTruthId",
+          "shipmentId",
+          "partition",
+          "deliveryOutcome",
+          "delayClass",
+          "actualDeliveredAt",
+          "promisedDeliveryAt",
+          "delayMinutes",
+          "primaryReasonCode",
+          "hasOpenException",
+          "hasPickupScan",
+          "etaAtAsOfId",
+          "etaAtAsOf",
+          "asOf",
+          "labelRuleVersion",
+          "rationale"
+        ]
+      },
+      {
+        "file": "anomaly_manifest.json",
+        "collection": null,
+        "format": "json",
+        "rows": null,
+        "bytes": 22947,
+        "sha256": "6ea5153937253c94075c8c66612a19b519e4232cbe86d59f71ada900030f0fbf"
+      },
+      {
+        "file": "validation_report.json",
+        "collection": null,
+        "format": "json",
+        "rows": null,
+        "bytes": 52352,
+        "sha256": "440b8e67d89559b624f0e115d7663926189583a43f6d90335433b6fdaf3b110e"
+      }
+    ]
+  }
+}

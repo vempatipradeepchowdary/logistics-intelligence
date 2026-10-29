@@ -24,7 +24,12 @@ export async function generate(req, res) {
     overrides: body.overrides ?? {},
   });
   const job = await startJob('GENERATE', body);
-  return sendOk(res, job, { statusUrl: `/api/admin/jobs/${job.jobId}`, effectiveConfig: config }, 202);
+  return sendOk(
+    res,
+    job,
+    { statusUrl: `/api/admin/jobs/${job.jobId}`, effectiveConfig: config },
+    202,
+  );
 }
 
 export const validate = async (req, res) =>

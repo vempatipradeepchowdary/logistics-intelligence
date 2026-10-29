@@ -1,0 +1,5 @@
+serviceLevelId,name,transportMode,transitDaysByZone.Z1,transitDaysByZone.Z2,transitDaysByZone.Z3,transitDaysByZone.Z4,pickupCutoffMinuteUtc,deadlineMinuteUtc,handlingFactor,atRiskBufferMinutes,priority,mixWeight
+SL-ECONOMY,Economy Ground,GROUND,2,3,4,5,900,1439,2,360,4,16
+SL-EXPRESS,Express (1-2 Day Air),AIR,1,1,2,2,1020,1439,0.5,120,1,14
+SL-PRIORITY,Priority Two Day,AIR,2,2,2,2,1020,1439,0.75,180,2,24
+SL-STANDARD,Standard Ground,GROUND,2,2,3,5,960,1439,1,240,3,46

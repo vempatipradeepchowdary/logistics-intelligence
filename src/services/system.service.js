@@ -25,11 +25,20 @@ export async function getSystemConfig() {
         eventsPerShipmentRatio: [5.2, 6.8],
         maxShipments: 899999,
       },
-      behaviour: 'Generation with reset=true REPLACES the current dataset; resume continues an interrupted run with the same configuration.',
+      behaviour:
+        'Generation with reset=true REPLACES the current dataset; resume continues an interrupted run with the same configuration.',
     },
     eta: { algorithmVersion: ETA_CONFIG.algorithmVersion, parameters: ETA_CONFIG },
-    validation: { rules: RULES.length, lateIngestionThresholdMinutes: LATE_INGESTION_THRESHOLD_MINUTES },
-    api: { maxPageSize: 200, defaultPageSize: 25, rateLimitPerMinute: env.RATE_LIMIT_MAX, adminRateLimitPerMinute: env.ADMIN_RATE_LIMIT_MAX },
+    validation: {
+      rules: RULES.length,
+      lateIngestionThresholdMinutes: LATE_INGESTION_THRESHOLD_MINUTES,
+    },
+    api: {
+      maxPageSize: 200,
+      defaultPageSize: 25,
+      rateLimitPerMinute: env.RATE_LIMIT_MAX,
+      adminRateLimitPerMinute: env.ADMIN_RATE_LIMIT_MAX,
+    },
     latestManifest: manifest,
   };
 }

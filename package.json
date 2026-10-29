@@ -30,7 +30,8 @@
     "frontend:build": "npm --prefix frontend run build",
     "frontend:test": "npm --prefix frontend test",
     "frontend:e2e": "npm --prefix frontend run test:e2e",
-    "frontend:lint": "npm --prefix frontend run lint"
+    "frontend:lint": "npm --prefix frontend run lint",
+    "export:sql": "node --no-warnings src/scripts/exportSqlJson.js"
   },
   "keywords": [
     "logistics",

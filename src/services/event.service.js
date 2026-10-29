@@ -35,7 +35,11 @@ export async function listEvents(query) {
   }
   const skip = (query.page - 1) * query.limit;
   const [items, total, index] = await Promise.all([
-    TrackingEvent.find(filter, { _id: 0 }).sort(SORTS[query.sort]).skip(skip).limit(query.limit).lean(),
+    TrackingEvent.find(filter, { _id: 0 })
+      .sort(SORTS[query.sort])
+      .skip(skip)
+      .limit(query.limit)
+      .lean(),
     TrackingEvent.countDocuments(filter),
     latestViolationIndex(),
   ]);

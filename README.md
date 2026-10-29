@@ -19,6 +19,50 @@ This repository contains a complete, working logistics data-engineering platform
 Everything described below was built and run on the development machine; the measured results in
 [section 14](#14-measured-results) are real outputs, not estimates.
 
+## Requirements checklist
+
+| Brief requirement | Where it is / how to check it |
+|---|---|
+| 11 related entities with keys and relationships | `src/models/`, [docs/DATA_DICTIONARY.md](docs/DATA_DICTIONARY.md), cardinality table in [docs/ARCHITECTURE.md §10](docs/ARCHITECTURE.md#10-relational-model-cardinality-bridge-tables-effective-dates-calendars) |
+| 50,000 shipments · 300,000 tracking events · 100 facilities · 1,000 disruption windows | `npm run generate:full` → counts in [section 14](#14-measured-results); asserted by `npm run test:full` |
+| Realistic lifecycle, timestamps, queues, weather, reroutes | `src/generators/`, `src/domain/` ([section 7](#7-the-dataset-what-gets-generated-and-how)) |
+| ETA estimates without future-data leakage | `src/services/eta.service.js`; rule `ETA_FUTURE_DATA_LEAKAGE`; leakage unit tests in `tests/unit/` ([section 8](#8-eta-engine)) |
+| Ground truth and delay reasons kept separate from predictions | `ground_truth`, `delay_reasons` collections ([section 9](#9-ground-truth-and-delay-classification)) |
+| Labelled anomalies + validation that separates them from real defects | `src/generators/anomaly.generator.js`, `src/validators/`; `npm run validate` → PASS, 0 unexpected, 60/60 detected ([section 10](#10-validation-engine-and-anomaly-scenarios)) |
+| CSV / JSON deliverables | `npm run export` → `exports/<label>/` ([section 11](#11-csv--json-exports-and-reproducibility)) |
+| SQL export: schema with PK/FK, bridge tables, seeds, separate anomaly seed | `npm run export:sql -- --label <label> --verify` → `sql/schema.sql`, `sql/seed.sql`, `sql/seed_anomalies.sql`, `json/<entity>.json` |
+| Data you can inspect without installing anything | [`exports/sample/`](exports/sample/) (see below) |
+| Reproducibility (same seed → identical data) | `npm run verify:repro` → `exports/reproducibility_report.json` |
+| Cardinality, effective dates, lifecycle states, calendars | [docs/ARCHITECTURE.md §10](docs/ARCHITECTURE.md#10-relational-model-cardinality-bridge-tables-effective-dates-calendars) |
+| API + UI | `src/routes/` ([section 12](#12-rest-api)), `frontend/` ([section 13](#13-frontend-yottaflex-intelligence)) |
+| Tests | `npm test`, `npm run test:full`, `npm run frontend:test` ([section 15](#15-testing)) |
+
+## See the data without installing anything
+
+[`exports/sample/`](exports/sample/) is a committed, fully validated export of the **tiny** profile
+(same seed `20261022`, same code as the full run). Open it straight from GitHub:
+
+| What | Size |
+|---|---|
+| 12 CSV files (one per entity) | 600 shipments (+28 anomaly), 3,600 events (+183), 100 facilities, 120 disruption windows, 9,326 routes, 12,600 queue observations, 1,600 ETA snapshots (+96) |
+| `json/<entity>.json` | the same rows as JSON with nested objects restored |
+| `sql/schema.sql` | 27 tables: 12 entities + 13 bridge tables + `route_stops` / `route_legs`, with primary and foreign keys |
+| `sql/seed.sql` / `sql/seed_anomalies.sql` | baseline rows, and the 30 labelled anomaly cases kept in a separate file |
+| `anomaly_manifest.json` | every injected anomaly with the rule that must catch it |
+| `validation_report.json` | **PASS**, 0 unexpected errors, 30/30 anomaly cases detected |
+| `dataset_manifest.json`, `sql_json_manifest.json` | seed, config, row counts and SHA-256 of every file; SQLite verification result |
+
+Load it into SQLite (any SQLite ≥ 3.35):
+
+```bash
+cd exports/sample/sql
+sqlite3 sample.db ".read schema.sql" ".read seed.sql" "PRAGMA foreign_key_check;"   # no output = 0 violations
+sqlite3 sample.db ".read seed_anomalies.sql" "PRAGMA foreign_key_check;"            # 8 rows: the intentional bad references
+```
+
+The full-volume export is not committed (CSV 201 MB, SQL 268 MB, JSON 451 MB; GitHub rejects files
+over 100 MB). It is byte-for-byte reproducible with the commands in [section 4](#4-how-to-run-everything--step-by-step).
+
 ---
 
 ## Contents
@@ -55,7 +99,7 @@ Everything described below was built and run on the development machine; the mea
 | CLI scripts | Node.js | `src/scripts/` | generate, validate, export, verify reproducibility, build data dictionary |
 | Tests | Vitest, Supertest, Testing Library, Playwright | `tests/`, `frontend/src/**/*.test.*`, `frontend/e2e/` | 95 backend + 33 frontend + 9 end-to-end tests |
 | Docs | Markdown | `README.md` (this file), `docs/ARCHITECTURE.md`, `docs/DATA_DICTIONARY.md`, `frontend/README.md` | design, field-level dictionary (generated from the schemas), frontend details |
-| Deliverables | CSV + JSON | `exports/<label>/` (generated, git-ignored) | 12 CSV files + anomaly manifest + validation report + dataset manifest |
+| Deliverables | CSV, JSON, SQL | `exports/<label>/` (generated, git-ignored); `exports/sample/` (committed) | 12 CSV files + anomaly manifest + validation report + dataset manifest; per-entity JSON and a relational SQL schema + seeds |
 
 ---
 
@@ -158,7 +202,8 @@ instead of `Copy-Item`.
 ### Step 1 — Get the code and install backend dependencies
 
 ```powershell
-cd C:\Users\prade\OneDrive\Desktop\logistic-etaAi      # or wherever you cloned it
+git clone https://github.com/vempatipradeepchowdary/logistics-intelligence.git
+cd logistics-intelligence
 npm install
 ```
 
@@ -307,11 +352,12 @@ All commands run from the repository root.
 | `node src/scripts/generateData.js --profile full --resume` | continue an interrupted generation with the same config |
 | `npm run validate` | standalone validation; `-- --report <file>` writes the full JSON report, `-- --export-dir <dir>` cross-checks an export |
 | `npm run export` | export to `exports/latest`; `-- --label name` writes to `exports/name` |
+| `npm run export:sql -- --label name [--verify]` | turn `exports/name/*.csv` into `json/<entity>.json` and `sql/schema.sql` + `seed.sql` + `seed_anomalies.sql`; `--verify` loads them into SQLite and checks foreign keys and row counts. Re-run it after every `npm run export` (the export replaces the whole folder) |
 | `npm run verify:repro` | generate the same seed twice into separate DBs and compare all checksums (`-- --profile full --control` to also prove a different seed differs) |
 | `npm run docs:dictionary` | regenerate `docs/DATA_DICTIONARY.md` from the Mongoose schemas |
 | `npm test` | backend unit + integration + acceptance tests (uses `logistics_eta_test`) |
 | `npm run test:unit` / `test:integration` / `test:acceptance` | one backend layer only |
-| `npm run test:full` | full-volume acceptance test (50k/300k) in a separate `_test` database, ~4 min |
+| `npm run test:full` | full-volume acceptance test (50k/300k) in a separate `_test` database, ~8 min |
 | `npm run lint` / `npm run format` | ESLint / Prettier for the backend |
 | `npm run frontend:install` | install frontend dependencies |
 | `npm run frontend:dev` | Vite dev server on :5173 |
@@ -541,7 +587,34 @@ dataset_manifest.json     seed, config, versions, record counts, checksums, per-
 Format: RFC 4180 CSV, UTF-8, header row, CRLF; ISO-8601 UTC timestamps; string arrays pipe-joined;
 nested arrays JSON-encoded in one cell; empty cell = null. Files are written to a staging folder and
 swapped in atomically, and each file's row count is checked against its collection. Exports are
-git-ignored (~201 MB at full volume) because they are fully reproducible.
+git-ignored (~201 MB at full volume) because they are fully reproducible; the tiny-profile export in
+`exports/sample/` is the one exception.
+
+**SQL and per-entity JSON:** `npm run export:sql -- --label <label> --verify` reads the CSV files (no
+MongoDB connection needed) and adds:
+
+```
+json/<entity>.json        one JSON array per entity, nested objects restored
+sql/schema.sql            27 tables with PRIMARY KEY / FOREIGN KEY constraints
+sql/seed.sql              BASELINE rows, in one transaction
+sql/seed_anomalies.sql    labelled ANOMALY rows only; they contain the deliberate bad references
+sql_json_manifest.json    row counts per table and partition, SHA-256 per file, verification result
+```
+
+MongoDB embeds many-to-many links as ID arrays; the SQL export normalises each array into a bridge
+table with a composite primary key (`carrier_service_levels`, `weather_event_facilities`,
+`eta_input_events` with a `position` column, `delay_evidence_*`, and 9 more), and turns route stops and
+legs into `route_stops` / `route_legs`. `--verify` loads everything into SQLite with
+`foreign_keys = OFF`, runs `PRAGMA foreign_key_check` after the baseline seed and again after the
+anomaly seed, and compares every table's row count with the seed and the CSV. Measured:
+
+| Export | Rows (27 tables) | Baseline FK violations | Anomaly FK violations (intentional) | Time |
+|---|---|---|---|---|
+| `sample` (tiny) | 108,229 | **0** | 8 (`shipments`, `tracking_events`) | 4 s |
+| `latest` (full) | 1,761,212 | **0** | 16 (`shipments`, `tracking_events`) | 42 s; SQL 268 MB, JSON 451 MB |
+
+The script streams one CSV line at a time, so memory stays flat at full volume. The SQL is portable:
+types are PostgreSQL-compatible and it was tested on SQLite 3.50.
 
 **Reproducibility:** `npm run verify:repro` generates the same seed and config into two separate
 databases, compares the per-collection content checksums (from MongoDB, excluding `_id`) and the SHA-256
@@ -696,7 +769,7 @@ mostly the ones hit by unforecast weather, failed attempts or slow carriers.
 
 ```powershell
 npm test                 # unit + integration + acceptance, ~95 s
-npm run test:full        # full-volume acceptance, ~4 min
+npm run test:full        # full-volume acceptance, ~8 min
 npm run lint
 ```
 
@@ -735,11 +808,13 @@ npm run test:e2e
 
 | Suite | Result |
 |---|---|
-| Backend `npm test` | **95 / 95 passed** (10 files) |
-| Backend `npm run test:full` | **3 / 3 passed** — run before the latest three read-only indexes for the UI were added; generation code is unchanged, but re-run it before submission to confirm |
+| Backend `npm test` | **95 / 95 passed** (10 files, ~71 s) |
+| Backend `npm run test:full` | **3 / 3 passed** (full 50k/300k generation, validation and export in `logistics_eta_full_test`, 458 s) |
+| `npm run verify:repro` | **REPRODUCIBLE: YES** — two runs of the same seed gave identical collection checksums and identical SHA-256 for all 12 CSV files |
+| `npm run export:sql -- --verify` | **passed** on `sample` and full `latest`: 0 baseline foreign-key violations, row counts match seeds and CSVs |
 | Frontend component/unit | **33 / 33 passed** |
 | Frontend end-to-end (Playwright, real backend, full dataset) | **9 / 9 passed** |
-| Lint (backend and frontend) | clean |
+| ESLint (backend and frontend), Prettier (backend) | clean |
 | Frontend production build | succeeds |
 
 ---
@@ -755,7 +830,8 @@ logistic-etaAi/
 ├── docs/
 │   ├── ARCHITECTURE.md           design decisions, ER diagram, time semantics
 │   └── DATA_DICTIONARY.md        every field/type/constraint/index (generated)
-├── exports/                      generated deliverables (git-ignored except README)
+├── exports/                      generated deliverables (git-ignored except README and sample/)
+│   └── sample/                   committed tiny-profile export: CSV, JSON, SQL, manifests, validation report
 ├── src/
 │   ├── app.js, server.js         Express app (API + built UI), start/shutdown
 │   ├── config/                   env (Zod), database, constants, generation profiles
@@ -768,7 +844,7 @@ logistic-etaAi/
 │   ├── routes/, controllers/     REST layer (+ request schemas)
 │   ├── middleware/               auth, error handler, request validation, request logging
 │   ├── jobs/worker.js            background worker for generate/validate/export
-│   ├── scripts/                  generateData, validateData, exportData, verifyReproducibility, generateDataDictionary
+│   ├── scripts/                  generateData, validateData, exportData, exportSqlJson, verifyReproducibility, generateDataDictionary
 │   └── utils/                    logger, time, ids, hashing, csv, bulk writes, dataset cache, errors
 ├── tests/
 │   ├── unit/  integration/  acceptance/  helpers/

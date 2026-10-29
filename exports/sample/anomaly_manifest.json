@@ -1,0 +1,761 @@
+{
+  "description": "Intentionally injected anomalies (partition ANOMALY) and the validation outcome expected for each",
+  "variants": [
+    {
+      "scenario": "A_INGESTION_TIME_CONFUSION",
+      "variant": "LATE_ARRIVING_EVENT",
+      "expected": [
+        "TEMPORAL_LATE_INGESTION"
+      ]
+    },
+    {
+      "scenario": "A_INGESTION_TIME_CONFUSION",
+      "variant": "INGESTED_BEFORE_OCCURRED",
+      "expected": [
+        "TEMPORAL_INGESTED_BEFORE_OCCURRED"
+      ]
+    },
+    {
+      "scenario": "B_IMPOSSIBLE_ROUTE_ORDER",
+      "variant": "SWAPPED_FACILITY_ORDER",
+      "expected": [
+        "ROUTE_SEQUENCE_VIOLATION"
+      ]
+    },
+    {
+      "scenario": "B_IMPOSSIBLE_ROUTE_ORDER",
+      "variant": "FACILITY_NOT_ON_ROUTE",
+      "expected": [
+        "ROUTE_FACILITY_NOT_ON_ROUTE"
+      ]
+    },
+    {
+      "scenario": "B_IMPOSSIBLE_ROUTE_ORDER",
+      "variant": "LEG_CHAIN_BROKEN",
+      "expected": [
+        "LEG_CHAIN_CONTINUITY"
+      ]
+    },
+    {
+      "scenario": "C_FUTURE_DATA_LEAKAGE",
+      "variant": "FUTURE_EVENTS_USED",
+      "expected": [
+        "ETA_FUTURE_DATA_LEAKAGE",
+        "ETA_REPRODUCIBILITY_MISMATCH",
+        "ETA_ADJUSTMENT_RECONCILIATION"
+      ]
+    },
+    {
+      "scenario": "C_FUTURE_DATA_LEAKAGE",
+      "variant": "FUTURE_WEATHER_USED",
+      "expected": [
+        "ETA_FUTURE_DATA_LEAKAGE",
+        "ETA_REPRODUCIBILITY_MISMATCH"
+      ]
+    },
+    {
+      "scenario": "D_DELIVERED_STILL_IN_TRANSIT",
+      "variant": "DELIVERED_STATUS_IN_TRANSIT",
+      "expected": [
+        "SHIPMENT_STATUS_EVENT_MISMATCH"
+      ]
+    },
+    {
+      "scenario": "E_DUPLICATE_EVENT",
+      "variant": "DUPLICATE_SCAN",
+      "expected": [
+        "EVENT_DUPLICATE"
+      ]
+    },
+    {
+      "scenario": "F_INVALID_REFERENCE",
+      "variant": "EVENT_UNKNOWN_FACILITY",
+      "expected": [
+        "REF_INTEGRITY",
+        "ROUTE_FACILITY_NOT_ON_ROUTE"
+      ]
+    },
+    {
+      "scenario": "F_INVALID_REFERENCE",
+      "variant": "SHIPMENT_UNKNOWN_CARRIER",
+      "expected": [
+        "REF_INTEGRITY"
+      ]
+    },
+    {
+      "scenario": "F_INVALID_REFERENCE",
+      "variant": "ORPHAN_EVENT",
+      "expected": [
+        "REF_INTEGRITY"
+      ]
+    },
+    {
+      "scenario": "G_INVALID_TIMESTAMP",
+      "variant": "EVENT_BEFORE_CREATION",
+      "expected": [
+        "TEMPORAL_EVENT_BEFORE_CREATION",
+        "TEMPORAL_MILESTONE_ORDER"
+      ]
+    },
+    {
+      "scenario": "H_ILLEGAL_LIFECYCLE",
+      "variant": "SCAN_AFTER_DELIVERY",
+      "expected": [
+        "LIFECYCLE_ILLEGAL_TRANSITION"
+      ]
+    },
+    {
+      "scenario": "I_MISSING_EVENT_GAP",
+      "variant": "TRACKING_STALLED",
+      "expected": [
+        "TRACKING_STALLED"
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "anomalyId": "ANM-2026-0001",
+      "scenario": "A_INGESTION_TIME_CONFUSION",
+      "variant": "LATE_ARRIVING_EVENT",
+      "shipmentId": "SHP-2026-900001",
+      "affectedRecords": [
+        {
+          "entityType": "TrackingEvent",
+          "recordId": "EVT-SHP-2026-900001-000003",
+          "field": null
+        }
+      ],
+      "description": "Hub arrival scan ingested 30h after it occurred (late-arriving event). Historical ETAs between occurrence and ingestion must not use it.",
+      "expectedRuleIds": [
+        "TEMPORAL_LATE_INGESTION"
+      ],
+      "expectedOutcome": "DETECTED"
+    },
+    {
+      "anomalyId": "ANM-2026-0002",
+      "scenario": "A_INGESTION_TIME_CONFUSION",
+      "variant": "LATE_ARRIVING_EVENT",
+      "shipmentId": "SHP-2026-900002",
+      "affectedRecords": [
+        {
+          "entityType": "TrackingEvent",
+          "recordId": "EVT-SHP-2026-900002-000004",
+          "field": null
+        }
+      ],
+      "description": "Hub arrival scan ingested 30h after it occurred (late-arriving event). Historical ETAs between occurrence and ingestion must not use it.",
+      "expectedRuleIds": [
+        "TEMPORAL_LATE_INGESTION"
+      ],
+      "expectedOutcome": "DETECTED"
+    },
+    {
+      "anomalyId": "ANM-2026-0003",
+      "scenario": "A_INGESTION_TIME_CONFUSION",
+      "variant": "INGESTED_BEFORE_OCCURRED",
+      "shipmentId": "SHP-2026-900003",
+      "affectedRecords": [
+        {
+          "entityType": "TrackingEvent",
+          "recordId": "EVT-SHP-2026-900003-000002",
+          "field": null
+        }
+      ],
+      "description": "Arrival scan whose ingestion time is 3h before its occurrence time (clock skew / impossible timestamp).",
+      "expectedRuleIds": [
+        "TEMPORAL_INGESTED_BEFORE_OCCURRED"
+      ],
+      "expectedOutcome": "DETECTED"
+    },
+    {
+      "anomalyId": "ANM-2026-0004",
+      "scenario": "A_INGESTION_TIME_CONFUSION",
+      "variant": "INGESTED_BEFORE_OCCURRED",
+      "shipmentId": "SHP-2026-900004",
+      "affectedRecords": [
+        {
+          "entityType": "TrackingEvent",
+          "recordId": "EVT-SHP-2026-900004-000002",
+          "field": null
+        }
+      ],
+      "description": "Arrival scan whose ingestion time is 3h before its occurrence time (clock skew / impossible timestamp).",
+      "expectedRuleIds": [
+        "TEMPORAL_INGESTED_BEFORE_OCCURRED"
+      ],
+      "expectedOutcome": "DETECTED"
+    },
+    {
+      "anomalyId": "ANM-2026-0005",
+      "scenario": "B_IMPOSSIBLE_ROUTE_ORDER",
+      "variant": "SWAPPED_FACILITY_ORDER",
+      "shipmentId": "SHP-2026-900005",
+      "affectedRecords": [
+        {
+          "entityType": "TrackingEvent",
+          "recordId": "EVT-SHP-2026-900005-000002",
+          "field": null
+        },
+        {
+          "entityType": "TrackingEvent",
+          "recordId": "EVT-SHP-2026-900005-000003",
+          "field": null
+        }
+      ],
+      "description": "Arrival scans at the origin hub and destination hub have their facilities swapped, so the shipment appears to visit the route out of order.",
+      "expectedRuleIds": [
+        "ROUTE_SEQUENCE_VIOLATION"
+      ],
+      "expectedOutcome": "DETECTED"
+    },
+    {
+      "anomalyId": "ANM-2026-0006",
+      "scenario": "B_IMPOSSIBLE_ROUTE_ORDER",
+      "variant": "SWAPPED_FACILITY_ORDER",
+      "shipmentId": "SHP-2026-900006",
+      "affectedRecords": [
+        {
+          "entityType": "TrackingEvent",
+          "recordId": "EVT-SHP-2026-900006-000002",
+          "field": null
+        },
+        {
+          "entityType": "TrackingEvent",
+          "recordId": "EVT-SHP-2026-900006-000003",
+          "field": null
+        }
+      ],
+      "description": "Arrival scans at the origin hub and destination hub have their facilities swapped, so the shipment appears to visit the route out of order.",
+      "expectedRuleIds": [
+        "ROUTE_SEQUENCE_VIOLATION"
+      ],
+      "expectedOutcome": "DETECTED"
+    },
+    {
+      "anomalyId": "ANM-2026-0007",
+      "scenario": "B_IMPOSSIBLE_ROUTE_ORDER",
+      "variant": "FACILITY_NOT_ON_ROUTE",
+      "shipmentId": "SHP-2026-900007",
+      "affectedRecords": [
+        {
+          "entityType": "TrackingEvent",
+          "recordId": "EVT-SHP-2026-900007-000003",
+          "field": null
+        }
+      ],
+      "description": "An arrival scan at a hub that is not on the planned or current route.",
+      "expectedRuleIds": [
+        "ROUTE_FACILITY_NOT_ON_ROUTE"
+      ],
+      "expectedOutcome": "DETECTED"
+    },
+    {
+      "anomalyId": "ANM-2026-0008",
+      "scenario": "B_IMPOSSIBLE_ROUTE_ORDER",
+      "variant": "FACILITY_NOT_ON_ROUTE",
+      "shipmentId": "SHP-2026-900008",
+      "affectedRecords": [
+        {
+          "entityType": "TrackingEvent",
+          "recordId": "EVT-SHP-2026-900008-000003",
+          "field": null
+        }
+      ],
+      "description": "An arrival scan at a hub that is not on the planned or current route.",
+      "expectedRuleIds": [
+        "ROUTE_FACILITY_NOT_ON_ROUTE"
+      ],
+      "expectedOutcome": "DETECTED"
+    },
+    {
+      "anomalyId": "ANM-2026-0009",
+      "scenario": "B_IMPOSSIBLE_ROUTE_ORDER",
+      "variant": "LEG_CHAIN_BROKEN",
+      "shipmentId": "SHP-2026-900009",
+      "affectedRecords": [
+        {
+          "entityType": "ShipmentLeg",
+          "recordId": "LEG-SHP-2026-900009-02",
+          "field": "fromFacilityId"
+        }
+      ],
+      "description": "Leg 2 starts at a facility different from where leg 1 ended (discontinuous leg chain).",
+      "expectedRuleIds": [
+        "LEG_CHAIN_CONTINUITY"
+      ],
+      "expectedOutcome": "DETECTED"
+    },
+    {
+      "anomalyId": "ANM-2026-0010",
+      "scenario": "B_IMPOSSIBLE_ROUTE_ORDER",
+      "variant": "LEG_CHAIN_BROKEN",
+      "shipmentId": "SHP-2026-900010",
+      "affectedRecords": [
+        {
+          "entityType": "ShipmentLeg",
+          "recordId": "LEG-SHP-2026-900010-02",
+          "field": "fromFacilityId"
+        }
+      ],
+      "description": "Leg 2 starts at a facility different from where leg 1 ended (discontinuous leg chain).",
+      "expectedRuleIds": [
+        "LEG_CHAIN_CONTINUITY"
+      ],
+      "expectedOutcome": "DETECTED"
+    },
+    {
+      "anomalyId": "ANM-2026-0011",
+      "scenario": "C_FUTURE_DATA_LEAKAGE",
+      "variant": "FUTURE_EVENTS_USED",
+      "shipmentId": "SHP-2026-900011",
+      "affectedRecords": [
+        {
+          "entityType": "ETAEstimate",
+          "recordId": "ETA-SHP-2026-900011-20260102T1155Z",
+          "field": "watermark"
+        }
+      ],
+      "description": "ETA snapshot computed with a cutoff 30h after its recorded prediction time (uses events not yet ingested).",
+      "expectedRuleIds": [
+        "ETA_FUTURE_DATA_LEAKAGE",
+        "ETA_REPRODUCIBILITY_MISMATCH",
+        "ETA_ADJUSTMENT_RECONCILIATION"
+      ],
+      "expectedOutcome": "DETECTED"
+    },
+    {
+      "anomalyId": "ANM-2026-0012",
+      "scenario": "C_FUTURE_DATA_LEAKAGE",
+      "variant": "FUTURE_EVENTS_USED",
+      "shipmentId": "SHP-2026-900012",
+      "affectedRecords": [
+        {
+          "entityType": "ETAEstimate",
+          "recordId": "ETA-SHP-2026-900012-20260102T1524Z",
+          "field": "watermark"
+        }
+      ],
+      "description": "ETA snapshot computed with a cutoff 30h after its recorded prediction time (uses events not yet ingested).",
+      "expectedRuleIds": [
+        "ETA_FUTURE_DATA_LEAKAGE",
+        "ETA_REPRODUCIBILITY_MISMATCH",
+        "ETA_ADJUSTMENT_RECONCILIATION"
+      ],
+      "expectedOutcome": "DETECTED"
+    },
+    {
+      "anomalyId": "ANM-2026-0013",
+      "scenario": "C_FUTURE_DATA_LEAKAGE",
+      "variant": "FUTURE_WEATHER_USED",
+      "shipmentId": "SHP-2026-900013",
+      "affectedRecords": [
+        {
+          "entityType": "ETAEstimate",
+          "recordId": "ETA-SHP-2026-900013-20260102T1533Z",
+          "field": "watermark"
+        }
+      ],
+      "description": "ETA snapshot that applies a weather advisory published after its prediction time.",
+      "expectedRuleIds": [
+        "ETA_FUTURE_DATA_LEAKAGE",
+        "ETA_REPRODUCIBILITY_MISMATCH"
+      ],
+      "expectedOutcome": "DETECTED"
+    },
+    {
+      "anomalyId": "ANM-2026-0014",
+      "scenario": "C_FUTURE_DATA_LEAKAGE",
+      "variant": "FUTURE_WEATHER_USED",
+      "shipmentId": "SHP-2026-900014",
+      "affectedRecords": [
+        {
+          "entityType": "ETAEstimate",
+          "recordId": "ETA-SHP-2026-900014-20260102T1457Z",
+          "field": "watermark"
+        }
+      ],
+      "description": "ETA snapshot that applies a weather advisory published after its prediction time.",
+      "expectedRuleIds": [
+        "ETA_FUTURE_DATA_LEAKAGE",
+        "ETA_REPRODUCIBILITY_MISMATCH"
+      ],
+      "expectedOutcome": "DETECTED"
+    },
+    {
+      "anomalyId": "ANM-2026-0015",
+      "scenario": "D_DELIVERED_STILL_IN_TRANSIT",
+      "variant": "DELIVERED_STATUS_IN_TRANSIT",
+      "shipmentId": "SHP-2026-900015",
+      "affectedRecords": [
+        {
+          "entityType": "Shipment",
+          "recordId": "SHP-2026-900015",
+          "field": "status"
+        }
+      ],
+      "description": "Shipment has a valid DELIVERED event but its recorded status remains IN_TRANSIT and deliveredAt is empty.",
+      "expectedRuleIds": [
+        "SHIPMENT_STATUS_EVENT_MISMATCH"
+      ],
+      "expectedOutcome": "DETECTED"
+    },
+    {
+      "anomalyId": "ANM-2026-0016",
+      "scenario": "D_DELIVERED_STILL_IN_TRANSIT",
+      "variant": "DELIVERED_STATUS_IN_TRANSIT",
+      "shipmentId": "SHP-2026-900016",
+      "affectedRecords": [
+        {
+          "entityType": "Shipment",
+          "recordId": "SHP-2026-900016",
+          "field": "status"
+        }
+      ],
+      "description": "Shipment has a valid DELIVERED event but its recorded status remains IN_TRANSIT and deliveredAt is empty.",
+      "expectedRuleIds": [
+        "SHIPMENT_STATUS_EVENT_MISMATCH"
+      ],
+      "expectedOutcome": "DETECTED"
+    },
+    {
+      "anomalyId": "ANM-2026-0017",
+      "scenario": "E_DUPLICATE_EVENT",
+      "variant": "DUPLICATE_SCAN",
+      "shipmentId": "SHP-2026-900017",
+      "affectedRecords": [
+        {
+          "entityType": "TrackingEvent",
+          "recordId": "EVT-SHP-2026-900017-000003",
+          "field": null
+        }
+      ],
+      "description": "The same arrival scan is ingested twice under two event IDs.",
+      "expectedRuleIds": [
+        "EVENT_DUPLICATE"
+      ],
+      "expectedOutcome": "DETECTED"
+    },
+    {
+      "anomalyId": "ANM-2026-0018",
+      "scenario": "E_DUPLICATE_EVENT",
+      "variant": "DUPLICATE_SCAN",
+      "shipmentId": "SHP-2026-900018",
+      "affectedRecords": [
+        {
+          "entityType": "TrackingEvent",
+          "recordId": "EVT-SHP-2026-900018-000003",
+          "field": null
+        }
+      ],
+      "description": "The same arrival scan is ingested twice under two event IDs.",
+      "expectedRuleIds": [
+        "EVENT_DUPLICATE"
+      ],
+      "expectedOutcome": "DETECTED"
+    },
+    {
+      "anomalyId": "ANM-2026-0019",
+      "scenario": "F_INVALID_REFERENCE",
+      "variant": "EVENT_UNKNOWN_FACILITY",
+      "shipmentId": "SHP-2026-900019",
+      "affectedRecords": [
+        {
+          "entityType": "TrackingEvent",
+          "recordId": "EVT-SHP-2026-900019-000004",
+          "field": null
+        }
+      ],
+      "description": "Tracking event references facility FAC-999, which does not exist.",
+      "expectedRuleIds": [
+        "REF_INTEGRITY",
+        "ROUTE_FACILITY_NOT_ON_ROUTE"
+      ],
+      "expectedOutcome": "DETECTED"
+    },
+    {
+      "anomalyId": "ANM-2026-0020",
+      "scenario": "F_INVALID_REFERENCE",
+      "variant": "EVENT_UNKNOWN_FACILITY",
+      "shipmentId": "SHP-2026-900020",
+      "affectedRecords": [
+        {
+          "entityType": "TrackingEvent",
+          "recordId": "EVT-SHP-2026-900020-000004",
+          "field": null
+        }
+      ],
+      "description": "Tracking event references facility FAC-999, which does not exist.",
+      "expectedRuleIds": [
+        "REF_INTEGRITY",
+        "ROUTE_FACILITY_NOT_ON_ROUTE"
+      ],
+      "expectedOutcome": "DETECTED"
+    },
+    {
+      "anomalyId": "ANM-2026-0021",
+      "scenario": "F_INVALID_REFERENCE",
+      "variant": "SHIPMENT_UNKNOWN_CARRIER",
+      "shipmentId": "SHP-2026-900021",
+      "affectedRecords": [
+        {
+          "entityType": "Shipment",
+          "recordId": "SHP-2026-900021",
+          "field": "carrierId"
+        }
+      ],
+      "description": "Shipment references carrier CAR-099, which does not exist.",
+      "expectedRuleIds": [
+        "REF_INTEGRITY"
+      ],
+      "expectedOutcome": "DETECTED"
+    },
+    {
+      "anomalyId": "ANM-2026-0022",
+      "scenario": "F_INVALID_REFERENCE",
+      "variant": "SHIPMENT_UNKNOWN_CARRIER",
+      "shipmentId": "SHP-2026-900022",
+      "affectedRecords": [
+        {
+          "entityType": "Shipment",
+          "recordId": "SHP-2026-900022",
+          "field": "carrierId"
+        }
+      ],
+      "description": "Shipment references carrier CAR-099, which does not exist.",
+      "expectedRuleIds": [
+        "REF_INTEGRITY"
+      ],
+      "expectedOutcome": "DETECTED"
+    },
+    {
+      "anomalyId": "ANM-2026-0023",
+      "scenario": "F_INVALID_REFERENCE",
+      "variant": "ORPHAN_EVENT",
+      "shipmentId": "SHP-2026-900023",
+      "affectedRecords": [
+        {
+          "entityType": "TrackingEvent",
+          "recordId": "EVT-SHP-2026-900023-000001",
+          "field": null
+        }
+      ],
+      "description": "Tracking event whose shipment (and leg) does not exist.",
+      "expectedRuleIds": [
+        "REF_INTEGRITY"
+      ],
+      "expectedOutcome": "DETECTED"
+    },
+    {
+      "anomalyId": "ANM-2026-0024",
+      "scenario": "F_INVALID_REFERENCE",
+      "variant": "ORPHAN_EVENT",
+      "shipmentId": "SHP-2026-900024",
+      "affectedRecords": [
+        {
+          "entityType": "TrackingEvent",
+          "recordId": "EVT-SHP-2026-900024-000001",
+          "field": null
+        }
+      ],
+      "description": "Tracking event whose shipment (and leg) does not exist.",
+      "expectedRuleIds": [
+        "REF_INTEGRITY"
+      ],
+      "expectedOutcome": "DETECTED"
+    },
+    {
+      "anomalyId": "ANM-2026-0025",
+      "scenario": "G_INVALID_TIMESTAMP",
+      "variant": "EVENT_BEFORE_CREATION",
+      "shipmentId": "SHP-2026-900025",
+      "affectedRecords": [
+        {
+          "entityType": "TrackingEvent",
+          "recordId": "EVT-SHP-2026-900025-000001",
+          "field": null
+        }
+      ],
+      "description": "Pickup scan timestamped 2h before the shipment was created.",
+      "expectedRuleIds": [
+        "TEMPORAL_EVENT_BEFORE_CREATION",
+        "TEMPORAL_MILESTONE_ORDER"
+      ],
+      "expectedOutcome": "DETECTED"
+    },
+    {
+      "anomalyId": "ANM-2026-0026",
+      "scenario": "G_INVALID_TIMESTAMP",
+      "variant": "EVENT_BEFORE_CREATION",
+      "shipmentId": "SHP-2026-900026",
+      "affectedRecords": [
+        {
+          "entityType": "TrackingEvent",
+          "recordId": "EVT-SHP-2026-900026-000001",
+          "field": null
+        }
+      ],
+      "description": "Pickup scan timestamped 2h before the shipment was created.",
+      "expectedRuleIds": [
+        "TEMPORAL_EVENT_BEFORE_CREATION",
+        "TEMPORAL_MILESTONE_ORDER"
+      ],
+      "expectedOutcome": "DETECTED"
+    },
+    {
+      "anomalyId": "ANM-2026-0027",
+      "scenario": "H_ILLEGAL_LIFECYCLE",
+      "variant": "SCAN_AFTER_DELIVERY",
+      "shipmentId": "SHP-2026-900027",
+      "affectedRecords": [
+        {
+          "entityType": "TrackingEvent",
+          "recordId": "EVT-SHP-2026-900027-000009",
+          "field": null
+        }
+      ],
+      "description": "A facility arrival scan 6h after the DELIVERED event (DELIVERED is terminal).",
+      "expectedRuleIds": [
+        "LIFECYCLE_ILLEGAL_TRANSITION"
+      ],
+      "expectedOutcome": "DETECTED"
+    },
+    {
+      "anomalyId": "ANM-2026-0028",
+      "scenario": "H_ILLEGAL_LIFECYCLE",
+      "variant": "SCAN_AFTER_DELIVERY",
+      "shipmentId": "SHP-2026-900028",
+      "affectedRecords": [
+        {
+          "entityType": "TrackingEvent",
+          "recordId": "EVT-SHP-2026-900028-000009",
+          "field": null
+        }
+      ],
+      "description": "A facility arrival scan 6h after the DELIVERED event (DELIVERED is terminal).",
+      "expectedRuleIds": [
+        "LIFECYCLE_ILLEGAL_TRANSITION"
+      ],
+      "expectedOutcome": "DETECTED"
+    },
+    {
+      "anomalyId": "ANM-2026-0029",
+      "scenario": "I_MISSING_EVENT_GAP",
+      "variant": "TRACKING_STALLED",
+      "shipmentId": "SHP-2026-900029",
+      "affectedRecords": [
+        {
+          "entityType": "Shipment",
+          "recordId": "SHP-2026-900029",
+          "field": "trackingEvents"
+        }
+      ],
+      "description": "Shipment picked up 12 days before the snapshot with no further scans (missing-event gap).",
+      "expectedRuleIds": [
+        "TRACKING_STALLED"
+      ],
+      "expectedOutcome": "DETECTED"
+    },
+    {
+      "anomalyId": "ANM-2026-0030",
+      "scenario": "I_MISSING_EVENT_GAP",
+      "variant": "TRACKING_STALLED",
+      "shipmentId": "SHP-2026-900030",
+      "affectedRecords": [
+        {
+          "entityType": "Shipment",
+          "recordId": "SHP-2026-900030",
+          "field": "trackingEvents"
+        }
+      ],
+      "description": "Shipment picked up 12 days before the snapshot with no further scans (missing-event gap).",
+      "expectedRuleIds": [
+        "TRACKING_STALLED"
+      ],
+      "expectedOutcome": "DETECTED"
+    }
+  ],
+  "validEdgeCases": [
+    {
+      "category": "ON_TIME_DELIVERY",
+      "description": "Delivered on or before the SLA deadline",
+      "shipmentIds": [
+        "SHP-2026-000001",
+        "SHP-2026-000002",
+        "SHP-2026-000003"
+      ],
+      "expectedOutcome": "VALID: no ERROR or CRITICAL validation failures"
+    },
+    {
+      "category": "LATE_DELIVERY",
+      "description": "Delivered after the SLA deadline (with delay attribution)",
+      "shipmentIds": [
+        "SHP-2026-000017",
+        "SHP-2026-000099",
+        "SHP-2026-000146"
+      ],
+      "expectedOutcome": "VALID: no ERROR or CRITICAL validation failures"
+    },
+    {
+      "category": "ROUTE_CHANGE",
+      "description": "Rerouted at the origin hub (weather avoidance or linehaul capacity)",
+      "shipmentIds": [
+        "SHP-2026-000008",
+        "SHP-2026-000020",
+        "SHP-2026-000040"
+      ],
+      "expectedOutcome": "VALID: no ERROR or CRITICAL validation failures"
+    },
+    {
+      "category": "DELAYED_SCAN",
+      "description": "Scans ingested 1-5h after they occurred (below the 6h late-arrival threshold)",
+      "shipmentIds": [
+        "SHP-2026-000003",
+        "SHP-2026-000006",
+        "SHP-2026-000010"
+      ],
+      "expectedOutcome": "VALID: no ERROR or CRITICAL validation failures"
+    },
+    {
+      "category": "DELIVERY_ATTEMPT_FAILED",
+      "description": "Failed first delivery attempt followed by a successful retry",
+      "shipmentIds": [
+        "SHP-2026-000075",
+        "SHP-2026-000198",
+        "SHP-2026-000322"
+      ],
+      "expectedOutcome": "VALID: no ERROR or CRITICAL validation failures"
+    },
+    {
+      "category": "OPEN_OPERATIONAL_EXCEPTION",
+      "description": "Package held after a DAMAGED exception",
+      "shipmentIds": [
+        "SHP-2026-000205"
+      ],
+      "expectedOutcome": "VALID: no ERROR or CRITICAL validation failures"
+    },
+    {
+      "category": "INSUFFICIENT_DATA",
+      "description": "Tendered but never picked up; outcome cannot be established",
+      "shipmentIds": [
+        "SHP-2026-000096",
+        "SHP-2026-000101"
+      ],
+      "expectedOutcome": "VALID: no ERROR or CRITICAL validation failures"
+    },
+    {
+      "category": "AT_RISK",
+      "description": "In transit with an ETA close to or past the deadline",
+      "shipmentIds": [],
+      "expectedOutcome": "VALID: no ERROR or CRITICAL validation failures"
+    },
+    {
+      "category": "WEATHER_DELAY",
+      "description": "Late delivery primarily attributed to a weather disruption",
+      "shipmentIds": [
+        "SHP-2026-000017",
+        "SHP-2026-000099"
+      ],
+      "expectedOutcome": "VALID: no ERROR or CRITICAL validation failures"
+    }
+  ]
+}

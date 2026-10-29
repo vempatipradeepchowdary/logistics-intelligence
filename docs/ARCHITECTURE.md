@@ -232,7 +232,89 @@ validator must not flag.
 * Indexes are created before loading; queries use projections and indexed sorts; exports and
   validation use cursors (`batchSize` 2000) with stream back-pressure.
 * No unbounded `Promise.all` over records; the only parallel calls are fixed small sets.
-* Measured at full volume (README section 15): 440 MB data / 95 MB compressed on disk / 63 MB indexes;
+* Measured at full volume (README section 14): 440 MB data / 95 MB compressed on disk / 63 MB indexes;
   generation 222 s, validation 63 s on a laptop with local MongoDB 8.0. Peak Node memory was not
   instrumented; the design keeps only reference data (routes, queue observations, weather) and one
   batch / one shipment's records in memory. Your hardware will differ.
+
+## 10. Relational model: cardinality, bridge tables, effective dates, calendars
+
+### Cardinality
+
+"Required" means the child cannot exist without the parent (a NOT NULL foreign key in the SQL export).
+
+| Relationship | Cardinality | Required? | MongoDB storage | SQL export |
+|---|---|---|---|---|
+| Facility → parent hub | N : 1 | optional (null for hubs) | `facilities.parentHubId` | FK `facilities.parent_hub_id` |
+| Carrier ↔ Service level | N : M | — | array `carriers.supportedServiceLevelIds` | bridge `carrier_service_levels` |
+| Route → origin / destination facility | N : 1 each | required | `routes.originFacilityId`, `destinationFacilityId` | FKs |
+| Route → stops / legs | 1 : N (ordered) | required (≥ 2 stops, ≥ 1 leg) | embedded arrays `routes.stops`, `routes.legs` | child tables `route_stops`, `route_legs` |
+| Alternate route → primary route | N : 1 (0..1 alternate per primary) | optional | `routes.primaryRouteId` | self-FK |
+| Shipment → carrier, service level, origin, destination, planned route, current route | N : 1 each | required | scalar references | FKs |
+| Shipment → shipment legs | 1 : N | required (≥ 1) | `shipment_legs.shipmentId` | FK |
+| Shipment leg → route, from / to facility | N : 1 each | required | scalar references | FKs |
+| Shipment → tracking events | 1 : N | optional (0 for never-picked-up tenders) | `tracking_events.shipmentId` | FK |
+| Tracking event → leg, facility | N : 1 each | required | scalar references | FKs |
+| Shipment → ETA snapshots | 1 : N | optional | `eta_estimates.shipmentId` | FK |
+| ETA snapshot ↔ tracking events used / ignored | N : M (ordered) | — | arrays `inputs.eventIds`, `inputs.ignoredEventIds` | bridges `eta_input_events`, `eta_ignored_events` |
+| ETA snapshot ↔ queue observations, weather events, remaining facilities | N : M | — | arrays in `inputs` | bridges `eta_queue_observations`, `eta_weather_events`, `eta_remaining_facilities` |
+| Shipment → ground truth | 1 : 1 | required | `ground_truth.shipmentId` (unique) | FK |
+| Ground truth → ETA at snapshot | N : 1 | optional | `ground_truth.etaAtAsOfId` | FK |
+| Shipment → delay reasons | 1 : N | optional (≥ 1 exactly when DELAYED, one primary) | `delay_reasons.shipmentId` | FK |
+| Delay reason ↔ evidence legs / facilities / weather events | N : M | — | arrays `evidence.*` | bridges `delay_evidence_legs`, `delay_evidence_facilities`, `delay_evidence_weather_events` |
+| Weather event ↔ affected facilities | N : M | required (≥ 1) | array `weather_events.affectedFacilityIds` | bridge `weather_event_facilities` |
+| Weather event → centre facility | N : 1 | required | `centerFacilityId` | FK |
+| Facility queue observation → facility | N : 1 | required | `facility_queues.facilityId` | FK |
+| Facility queue observation ↔ active weather events | N : M | — | array `activeWeatherEventIds` | bridge `facility_queue_weather_events` |
+| Shipment leg ↔ weather events | N : M | — | array `shipment_legs.weatherEventIds` | bridge `shipment_leg_weather_events` |
+| Shipment last mile ↔ weather events | N : M | — | array `lastMile.weatherEventIds` | bridge `shipment_last_mile_weather_events` |
+| Anomaly case → shipment | N : 1 | required by ID (the ORPHAN case points at a deliberately missing shipment) | `anomaly_cases.shipmentId` | JSON manifest |
+
+**Why arrays in MongoDB and bridge tables in SQL.** The many-to-many lists are small, bounded, written
+once together with their parent and always read with it, so MongoDB embeds them (one read, no join,
+atomic write). The relational export (`npm run export:sql`, `src/scripts/exportSqlJson.js`) normalises
+every one of them into a bridge table with a composite primary key and two foreign keys, producing 27
+tables in total. `--verify` loads the result into SQLite and runs `PRAGMA foreign_key_check`: baseline
+data has 0 violations; every violation in `seed_anomalies.sql` belongs to a labelled invalid-reference
+anomaly.
+
+### Effective dates and lifecycle states
+
+| Entity | Effective dates | Lifecycle |
+|---|---|---|
+| Carrier | static for the dataset | `active` flag |
+| Service level | static | — (versioned through `serviceLevelId`) |
+| Facility | static | `operatingStatus = ACTIVE` |
+| Route | `version` + `effectiveFrom` (simulation start − 30 days); `(routeId, version)` unique | a changed route is a new version row; shipments keep the route they were planned on |
+| Shipment | `createdAt` → `plannedPickupAt` → `pickedUpAt` → `deliveredAt`; SLA `promisedDeliveryAt`; `dataAsOf` snapshot | `CREATED → PICKED_UP → IN_TRANSIT → OUT_FOR_DELIVERY → DELIVERED`, with an `EXCEPTION` branch that can return to transit or delivery; `DELIVERED` is terminal |
+| Shipment leg | `actualStartAt`, `actualDepartureAt`, `actualArrivalAt`; `cancelledAt` | `PLANNED → IN_PROGRESS → COMPLETED`, or `CANCELLED` when a reroute replaces it (history kept) |
+| Tracking event | `occurredAt` (event time), `ingestedAt` (receipt time) | immutable, append-only |
+| Weather event | `issuedAt` → `ingestedAt`; window `startAt` – `endAt` | `FORECAST` (issued before start) or `NOWCAST` (issued after start) |
+| Facility queue | `observedAt` (start of a 240-minute window) → `ingestedAt` | immutable observation |
+| ETA estimate | `predictionAt` (information cut-off) | immutable snapshot; `evaluation` added once the outcome is known |
+| Ground truth / delay reason | computed at the dataset `asOf` | versioned by `labelRuleVersion` / `ruleVersion` |
+
+### Calendars (carriers and facilities)
+
+**Current behaviour.** SLA commitments count **calendar days in UTC**. The tender cut-off is a minute of
+the UTC day, and last-mile delivery waves run every day at 08:00 UTC, including weekends. There are no
+holidays, and no per-carrier or per-facility working calendars. Facility time zones are stored on each
+facility (`timezone`) for information only.
+
+**Why.** A single time base keeps generation deterministic and lets the validator recompute every
+deadline and wave exactly. It also avoids inventing holiday data for fictional carriers, which would
+add complexity without adding analytical value to a synthetic dataset.
+
+**How calendars would plug in.** All calendar-sensitive logic lives in two shared functions, so adding
+calendars is local:
+
+1. Add a `calendars` collection: `calendarId`, IANA `timezone`, working weekdays, `holidays[]`, cut-off
+   and delivery-wave times. Reference it from `carriers.calendarId` and `facilities.calendarId`
+   (N : 1 each).
+2. Change `serviceStartDay` / `computePromisedDeliveryAt` in `src/domain/sla.js` to advance by working
+   days of the carrier calendar, and `plannedDeliveryWave` in `src/domain/operations.js` to skip the
+   destination facility's non-working days.
+3. The ETA engine and the validator's `SLA_DEADLINE_RECONCILIATION` rule already call these functions,
+   and the simulator's SLA deadline does too; its last-mile step uses the same wave constants
+   (`FIRST_WAVE_MINUTE`, `SECOND_WAVE_CUTOFF_MINUTE`) and would switch to the calendar-aware helper.
+   Generation, prediction and validation therefore stay consistent.

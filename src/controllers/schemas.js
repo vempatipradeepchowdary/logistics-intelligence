@@ -50,7 +50,14 @@ export const listShipmentsQuery = z
     createdFrom: isoDate.optional(),
     createdTo: isoDate.optional(),
     sort: z
-      .enum(['createdAt', '-createdAt', 'shipmentId', '-shipmentId', 'promisedDeliveryAt', '-promisedDeliveryAt'])
+      .enum([
+        'createdAt',
+        '-createdAt',
+        'shipmentId',
+        '-shipmentId',
+        'promisedDeliveryAt',
+        '-promisedDeliveryAt',
+      ])
       .default('shipmentId'),
   })
   .strict();
@@ -71,7 +78,9 @@ export const listEventsQuery = z
     to: isoDate.optional(),
     late: bool.optional(),
     flagged: bool.optional(),
-    sort: z.enum(['occurredAt', '-occurredAt', 'ingestedAt', '-ingestedAt', 'eventId']).default('-occurredAt'),
+    sort: z
+      .enum(['occurredAt', '-occurredAt', 'ingestedAt', '-ingestedAt', 'eventId'])
+      .default('-occurredAt'),
   })
   .strict();
 
@@ -94,18 +103,33 @@ export const violationsQuery = z
     page,
     limit,
     severity: z.enum(VALIDATION_SEVERITIES).optional(),
-    ruleId: z.string().regex(/^[A-Z_]{3,60}$/).optional(),
-    entityType: z.string().regex(/^[A-Za-z*]{1,40}$/).optional(),
+    ruleId: z
+      .string()
+      .regex(/^[A-Z_]{3,60}$/)
+      .optional(),
+    entityType: z
+      .string()
+      .regex(/^[A-Za-z*]{1,40}$/)
+      .optional(),
     classification: z.enum(['INTENTIONAL_ANOMALY', 'UNEXPECTED']).optional(),
-    q: z.string().regex(/^[A-Za-z0-9-]{1,40}$/).optional(),
+    q: z
+      .string()
+      .regex(/^[A-Za-z0-9-]{1,40}$/)
+      .optional(),
   })
   .strict();
 
 export const facilitiesQuery = z
   .object({
     type: z.enum(FACILITY_TYPES).optional(),
-    region: z.string().regex(/^[A-Z_]{2,30}$/).optional(),
-    q: z.string().regex(/^[A-Za-z0-9 .-]{1,40}$/).optional(),
+    region: z
+      .string()
+      .regex(/^[A-Z_]{2,30}$/)
+      .optional(),
+    q: z
+      .string()
+      .regex(/^[A-Za-z0-9 .-]{1,40}$/)
+      .optional(),
   })
   .strict();
 export const facilityDetailQuery = z
@@ -157,7 +181,13 @@ export const classifiedShipmentsQuery = z
     from: isoDate.optional(),
     to: isoDate.optional(),
     sort: z
-      .enum(['-delayMinutes', 'delayMinutes', 'promisedDeliveryAt', '-promisedDeliveryAt', 'shipmentId'])
+      .enum([
+        '-delayMinutes',
+        'delayMinutes',
+        'promisedDeliveryAt',
+        '-promisedDeliveryAt',
+        'shipmentId',
+      ])
       .default('-delayMinutes'),
   })
   .strict();

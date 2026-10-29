@@ -25,7 +25,12 @@ describe('tracking events explorer', () => {
   it('paginates server-side with lag and validation annotations', async () => {
     const res = await request(app).get('/api/events?limit=10&sort=-occurredAt').expect(200);
     expect(res.body.data).toHaveLength(10);
-    expect(res.body.meta).toMatchObject({ page: 1, limit: 10, total: 3783, lateThresholdMinutes: 360 });
+    expect(res.body.meta).toMatchObject({
+      page: 1,
+      limit: 10,
+      total: 3783,
+      lateThresholdMinutes: 360,
+    });
     const [a, b] = res.body.data;
     expect(Date.parse(a.occurredAt)).toBeGreaterThanOrEqual(Date.parse(b.occurredAt));
     expect(a).toHaveProperty('lagMinutes');
@@ -42,9 +47,18 @@ describe('tracking events explorer', () => {
 
   it('filters by type, time field and range, and rejects unknown params', async () => {
     const res = await request(app)
-      .get('/api/events?eventType=DELIVERED&timeField=ingestedAt&from=2026-01-05T00:00:00Z&to=2026-01-06T00:00:00Z&limit=200')
+      .get(
+        '/api/events?eventType=DELIVERED&timeField=ingestedAt&from=2026-01-05T00:00:00Z&to=2026-01-06T00:00:00Z&limit=200',
+      )
       .expect(200);
-    expect(res.body.data.every((e) => e.eventType === 'DELIVERED' && e.ingestedAt >= '2026-01-05' && e.ingestedAt <= '2026-01-06T00:00:00.000Z')).toBe(true);
+    expect(
+      res.body.data.every(
+        (e) =>
+          e.eventType === 'DELIVERED' &&
+          e.ingestedAt >= '2026-01-05' &&
+          e.ingestedAt <= '2026-01-06T00:00:00.000Z',
+      ),
+    ).toBe(true);
     await request(app).get('/api/events?eventType=TELEPORT').expect(400);
     await request(app).get('/api/events?sort=random').expect(400);
   });
@@ -83,7 +97,9 @@ describe('facilities and disruptions', () => {
 
 describe('ETA snapshots and analytics breakdowns', () => {
   it('lists snapshots and explains one from its own audit fields', async () => {
-    const list = await request(app).get('/api/etas?evaluated=true&limit=5&sort=-absError').expect(200);
+    const list = await request(app)
+      .get('/api/etas?evaluated=true&limit=5&sort=-absError')
+      .expect(200);
     const errors = list.body.data.map((e) => e.evaluation.absErrorMinutes);
     expect(errors).toEqual([...errors].sort((a, b) => b - a));
     const id = list.body.data[0].etaId;
@@ -94,7 +110,10 @@ describe('ETA snapshots and analytics breakdowns', () => {
 
   it('computes ETA breakdowns consistent with the stored evaluations', async () => {
     const res = await request(app).get('/api/analytics/eta-accuracy/breakdowns').expect(200);
-    const evaluated = await ETAEstimate.countDocuments({ partition: 'BASELINE', evaluation: { $ne: null } });
+    const evaluated = await ETAEstimate.countDocuments({
+      partition: 'BASELINE',
+      evaluation: { $ne: null },
+    });
     const o = res.body.data.overall;
     expect(o.snapshots).toBe(evaluated);
     expect(o.rmseMinutes).toBeGreaterThanOrEqual(o.maeMinutes);
@@ -110,13 +129,17 @@ describe('ETA snapshots and analytics breakdowns', () => {
     expect(d.body.data.byCarrier.length).toBeGreaterThan(0);
     const v = await request(app).get('/api/analytics/event-volume').expect(200);
     expect(v.body.data.daily.reduce((s, x) => s + x.events, 0)).toBe(3600);
-    const c = await request(app).get('/api/analytics/delays/shipments?delayClass=DELAYED&limit=5').expect(200);
+    const c = await request(app)
+      .get('/api/analytics/delays/shipments?delayClass=DELAYED&limit=5')
+      .expect(200);
     expect(c.body.data.every((g) => g.delayClass === 'DELAYED' && g.shipment.carrierId)).toBe(true);
     await request(app).get('/api/analytics/delays/shipments?delayClass=LATE').expect(400);
   });
 
   it('enriches shipment rows and filters by delay class', async () => {
-    const res = await request(app).get('/api/shipments?delayClass=DELAYED&limit=5&sort=-promisedDeliveryAt').expect(200);
+    const res = await request(app)
+      .get('/api/shipments?delayClass=DELAYED&limit=5&sort=-promisedDeliveryAt')
+      .expect(200);
     expect(res.body.data.every((s) => s.evaluation.delayClass === 'DELAYED')).toBe(true);
     expect(res.body.data[0]).toHaveProperty('latestEta.estimatedArrivalAt');
     expect(res.body.data[0]).toHaveProperty('lastEvent.eventType');
@@ -125,11 +148,15 @@ describe('ETA snapshots and analytics breakdowns', () => {
 
 describe('data quality, exports, jobs and system config', () => {
   it('filters validation violations with facets', async () => {
-    const res = await request(app).get('/api/analytics/data-quality/violations?classification=INTENTIONAL_ANOMALY&limit=200').expect(200);
+    const res = await request(app)
+      .get('/api/analytics/data-quality/violations?classification=INTENTIONAL_ANOMALY&limit=200')
+      .expect(200);
     expect(res.body.meta.total).toBeGreaterThan(0);
     expect(res.body.data.every((v) => v.classification === 'INTENTIONAL_ANOMALY')).toBe(true);
     expect(res.body.meta.facets.ruleId.length).toBeGreaterThan(0);
-    const none = await request(app).get('/api/analytics/data-quality/violations?classification=UNEXPECTED').expect(200);
+    const none = await request(app)
+      .get('/api/analytics/data-quality/violations?classification=UNEXPECTED')
+      .expect(200);
     expect(none.body.meta.total).toBe(0);
   });
 
@@ -137,7 +164,9 @@ describe('data quality, exports, jobs and system config', () => {
     const list = await request(app).get('/api/exports').expect(200);
     const exp = list.body.data.find((e) => e.label === 'explorer-test');
     expect(exp.files.map((f) => f.file)).toContain('tracking_events.csv');
-    const file = await request(app).get('/api/exports/explorer-test/files/carriers.csv').expect(200);
+    const file = await request(app)
+      .get('/api/exports/explorer-test/files/carriers.csv')
+      .expect(200);
     expect(file.headers['content-type']).toContain('text/csv');
     expect(file.headers['content-disposition']).toContain('attachment');
     await request(app).get('/api/exports/explorer-test/files/secrets.csv').expect(404);
@@ -147,7 +176,10 @@ describe('data quality, exports, jobs and system config', () => {
 
   it('lists jobs for admins only', async () => {
     await request(app).get('/api/admin/jobs').expect(401);
-    const res = await request(app).get('/api/admin/jobs?type=VALIDATE').set('x-api-key', KEY).expect(200);
+    const res = await request(app)
+      .get('/api/admin/jobs?type=VALIDATE')
+      .set('x-api-key', KEY)
+      .expect(200);
     expect(Array.isArray(res.body.data)).toBe(true);
     expect(res.body.meta).toHaveProperty('active');
   });

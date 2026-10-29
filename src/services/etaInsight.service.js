@@ -25,12 +25,22 @@ export async function listEtas(query) {
   const skip = (query.page - 1) * query.limit;
   const projection = { _id: 0, 'inputs.eventIds': 0, 'inputs.remainingFacilityIds': 0 };
   const [items, total] = await Promise.all([
-    ETAEstimate.find(filter, projection).sort(SORTS[query.sort]).skip(skip).limit(query.limit).lean(),
+    ETAEstimate.find(filter, projection)
+      .sort(SORTS[query.sort])
+      .skip(skip)
+      .limit(query.limit)
+      .lean(),
     ETAEstimate.countDocuments(filter),
   ]);
   return {
     items,
-    meta: { page: query.page, limit: query.limit, total, totalPages: Math.ceil(total / query.limit), sort: query.sort },
+    meta: {
+      page: query.page,
+      limit: query.limit,
+      total,
+      totalPages: Math.ceil(total / query.limit),
+      sort: query.sort,
+    },
   };
 }
 
@@ -71,7 +81,15 @@ export async function getEta(etaId) {
   if (!eta) throw new AppError('NOT_FOUND', `ETA snapshot ${etaId} not found`, 404);
   const shipment = await Shipment.findOne(
     { shipmentId: eta.shipmentId },
-    { _id: 0, shipmentId: 1, carrierId: 1, serviceLevelId: 1, originFacilityId: 1, destinationFacilityId: 1, promisedDeliveryAt: 1 },
+    {
+      _id: 0,
+      shipmentId: 1,
+      carrierId: 1,
+      serviceLevelId: 1,
+      originFacilityId: 1,
+      destinationFacilityId: 1,
+      promisedDeliveryAt: 1,
+    },
   ).lean();
   return {
     eta,

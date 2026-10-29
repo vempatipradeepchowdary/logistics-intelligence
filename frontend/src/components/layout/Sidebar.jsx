@@ -6,11 +6,7 @@ import { useApp } from '../../context/AppContext.jsx';
 function Brand({ collapsed }) {
   return (
     <div className="flex h-14 items-center gap-2.5 px-4">
-      <svg viewBox="0 0 32 32" className="size-7 shrink-0" aria-hidden>
-        <rect width="32" height="32" rx="7" fill="#17243a" />
-        <path d="M8 9l6 7v7h4v-7l6-7h-4.6L16 13.2 12.6 9z" fill="#4a70f6" />
-        <circle cx="24" cy="23" r="2.5" fill="#00977F" />
-      </svg>
+      <img src="/logo.jpg" alt="" width="28" height="28" className="size-7 shrink-0 rounded-md bg-white object-contain p-0.5" />
       {!collapsed && (
         <div className="min-w-0 leading-tight">
           <p className="truncate text-[13.5px] font-semibold text-white">YottaFlex</p>

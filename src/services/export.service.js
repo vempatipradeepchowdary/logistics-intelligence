@@ -298,7 +298,14 @@ export async function listExports() {
         validationRunId: m.exports?.validationRunId ?? null,
         files: [
           ...(m.exports?.files ?? []),
-          { file: 'dataset_manifest.json', collection: null, format: 'json', rows: null, bytes: size, sha256: null },
+          {
+            file: 'dataset_manifest.json',
+            collection: null,
+            format: 'json',
+            rows: null,
+            bytes: size,
+            sha256: null,
+          },
         ],
       });
     } catch {
@@ -315,10 +322,15 @@ export async function listExports() {
 export async function resolveExportFile(label, file) {
   const dir = resolveExportDir(label);
   const manifestPath = path.join(dir, 'dataset_manifest.json');
-  if (!existsSync(manifestPath)) throw new AppError('NOT_FOUND', `Export "${label}" not found`, 404);
+  if (!existsSync(manifestPath))
+    throw new AppError('NOT_FOUND', `Export "${label}" not found`, 404);
   const manifest = JSON.parse(await readFile(manifestPath, 'utf8'));
-  const allowed = new Set([...(manifest.exports?.files ?? []).map((f) => f.file), 'dataset_manifest.json']);
-  if (!allowed.has(file)) throw new AppError('NOT_FOUND', `File "${file}" is not part of export "${label}"`, 404);
+  const allowed = new Set([
+    ...(manifest.exports?.files ?? []).map((f) => f.file),
+    'dataset_manifest.json',
+  ]);
+  if (!allowed.has(file))
+    throw new AppError('NOT_FOUND', `File "${file}" is not part of export "${label}"`, 404);
   const target = path.resolve(dir, file);
   if (path.dirname(target) !== dir || !existsSync(target)) {
     throw new AppError('NOT_FOUND', `File "${file}" is missing from export "${label}"`, 404);

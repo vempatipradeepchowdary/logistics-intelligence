@@ -34,8 +34,12 @@ function facilityStats() {
             observations: { $sum: 1 },
             avgWait: { $avg: '$estimatedWaitMinutes' },
             maxWait: { $max: '$estimatedWaitMinutes' },
-            p90: { $percentile: { input: '$estimatedWaitMinutes', p: [0.9], method: 'approximate' } },
-            highOrSevere: { $sum: { $cond: [{ $in: ['$congestionLevel', ['HIGH', 'SEVERE']] }, 1, 0] } },
+            p90: {
+              $percentile: { input: '$estimatedWaitMinutes', p: [0.9], method: 'approximate' },
+            },
+            highOrSevere: {
+              $sum: { $cond: [{ $in: ['$congestionLevel', ['HIGH', 'SEVERE']] }, 1, 0] },
+            },
           },
         },
       ]),
@@ -45,10 +49,21 @@ function facilityStats() {
       ]),
       WeatherEvent.aggregate([
         { $unwind: '$affectedFacilityIds' },
-        { $group: { _id: '$affectedFacilityIds', n: { $sum: 1 }, maxSeverity: { $max: '$severity' } } },
+        {
+          $group: {
+            _id: '$affectedFacilityIds',
+            n: { $sum: 1 },
+            maxSeverity: { $max: '$severity' },
+          },
+        },
       ]),
       DelayReason.aggregate([
-        { $match: { isPrimary: true, reasonCode: { $in: ['FACILITY_CONGESTION', 'WEATHER_DISRUPTION'] } } },
+        {
+          $match: {
+            isPrimary: true,
+            reasonCode: { $in: ['FACILITY_CONGESTION', 'WEATHER_DISRUPTION'] },
+          },
+        },
         { $unwind: '$evidence.facilityIds' },
         { $group: { _id: '$evidence.facilityIds', n: { $sum: 1 } } },
       ]),
@@ -111,9 +126,14 @@ export async function getFacility(facilityId, { days }) {
   const asOf = await snapshotTime();
   const from = asOf ? new Date(asOf.getTime() - days * 86400000) : new Date(0);
   const [queueHistory, recentEvents, disruptions, delayReasons, stats, parent] = await Promise.all([
-    FacilityQueue.find({ facilityId, observedAt: { $gte: from } }, NO_ID).sort({ observedAt: 1 }).lean(),
+    FacilityQueue.find({ facilityId, observedAt: { $gte: from } }, NO_ID)
+      .sort({ observedAt: 1 })
+      .lean(),
     TrackingEvent.find({ facilityId }, NO_ID).sort({ occurredAt: -1 }).limit(25).lean(),
-    WeatherEvent.find({ affectedFacilityIds: facilityId }, NO_ID).sort({ startAt: -1 }).limit(50).lean(),
+    WeatherEvent.find({ affectedFacilityIds: facilityId }, NO_ID)
+      .sort({ startAt: -1 })
+      .limit(50)
+      .lean(),
     DelayReason.aggregate([
       { $match: { 'evidence.facilityIds': facilityId } },
       {
@@ -127,7 +147,9 @@ export async function getFacility(facilityId, { days }) {
       { $sort: { shipments: -1 } },
     ]),
     facilityStats(),
-    facility.parentHubId ? Facility.findOne({ facilityId: facility.parentHubId }, NO_ID).lean() : null,
+    facility.parentHubId
+      ? Facility.findOne({ facilityId: facility.parentHubId }, NO_ID).lean()
+      : null,
   ]);
   return {
     facility,
@@ -142,7 +164,12 @@ export async function getFacility(facilityId, { days }) {
     queueHistory,
     recentEvents,
     disruptions,
-    delayReasons: delayReasons.map((r) => ({ reasonCode: r._id, shipments: r.shipments, primary: r.primary, attributedMinutes: r.minutes })),
+    delayReasons: delayReasons.map((r) => ({
+      reasonCode: r._id,
+      shipments: r.shipments,
+      primary: r.primary,
+      attributedMinutes: r.minutes,
+    })),
   };
 }
 
@@ -162,7 +189,12 @@ function disruptionImpact() {
       },
       { $project: { legs: 1, shipments: { $size: '$shipments' }, weatherMinutes: 1 } },
     ]).allowDiskUse(true);
-    return new Map(rows.map((r) => [r._id, { legs: r.legs, shipments: r.shipments, weatherMinutes: r.weatherMinutes }]));
+    return new Map(
+      rows.map((r) => [
+        r._id,
+        { legs: r.legs, shipments: r.shipments, weatherMinutes: r.weatherMinutes },
+      ]),
+    );
   });
 }
 
@@ -184,7 +216,11 @@ export async function listDisruptions(query) {
   if (query.to) filter.startAt = { $lte: query.to };
   const skip = (query.page - 1) * query.limit;
   const [items, total, impact] = await Promise.all([
-    WeatherEvent.find(filter, NO_ID).sort(DISRUPTION_SORTS[query.sort]).skip(skip).limit(query.limit).lean(),
+    WeatherEvent.find(filter, NO_ID)
+      .sort(DISRUPTION_SORTS[query.sort])
+      .skip(skip)
+      .limit(query.limit)
+      .lean(),
     WeatherEvent.countDocuments(filter),
     disruptionImpact(),
   ]);
@@ -195,20 +231,37 @@ export async function listDisruptions(query) {
       advisoryLeadMinutes: Math.round((w.startAt - w.issuedAt) / 60000),
       impact: impact.get(w.weatherEventId) ?? { legs: 0, shipments: 0, weatherMinutes: 0 },
     })),
-    meta: { page: query.page, limit: query.limit, total, totalPages: Math.ceil(total / query.limit), sort: query.sort },
+    meta: {
+      page: query.page,
+      limit: query.limit,
+      total,
+      totalPages: Math.ceil(total / query.limit),
+      sort: query.sort,
+    },
   };
 }
 
 /** Daily counts of active disruption windows by severity (for the timeline chart). */
 export function disruptionTimeline() {
   return cached('disruption-timeline', async () => {
-    const events = await WeatherEvent.find({}, { _id: 0, startAt: 1, endAt: 1, severity: 1 }).lean();
+    const events = await WeatherEvent.find(
+      {},
+      { _id: 0, startAt: 1, endAt: 1, severity: 1 },
+    ).lean();
     const days = new Map();
     for (const e of events) {
       const first = Math.floor(e.startAt.getTime() / 86400000);
       const last = Math.floor((e.endAt.getTime() - 1) / 86400000);
       for (let d = first; d <= last; d += 1) {
-        if (!days.has(d)) days.set(d, { date: new Date(d * 86400000).toISOString().slice(0, 10), 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 });
+        if (!days.has(d))
+          days.set(d, {
+            date: new Date(d * 86400000).toISOString().slice(0, 10),
+            1: 0,
+            2: 0,
+            3: 0,
+            4: 0,
+            5: 0,
+          });
         days.get(d)[e.severity] += 1;
       }
     }
@@ -220,11 +273,25 @@ export async function getDisruption(weatherEventId) {
   const event = await WeatherEvent.findOne({ weatherEventId }, NO_ID).lean();
   if (!event) throw new AppError('NOT_FOUND', `Disruption ${weatherEventId} not found`, 404);
   const [legs, facilities, impact] = await Promise.all([
-    ShipmentLeg.find({ weatherEventIds: weatherEventId }, { _id: 0, legId: 1, shipmentId: 1, fromFacilityId: 1, toFacilityId: 1, actualDepartureAt: 1, delayBreakdown: 1 })
+    ShipmentLeg.find(
+      { weatherEventIds: weatherEventId },
+      {
+        _id: 0,
+        legId: 1,
+        shipmentId: 1,
+        fromFacilityId: 1,
+        toFacilityId: 1,
+        actualDepartureAt: 1,
+        delayBreakdown: 1,
+      },
+    )
       .sort({ shipmentId: 1 })
       .limit(100)
       .lean(),
-    Facility.find({ facilityId: { $in: event.affectedFacilityIds } }, { _id: 0, facilityId: 1, name: 1, type: 1, city: 1 }).lean(),
+    Facility.find(
+      { facilityId: { $in: event.affectedFacilityIds } },
+      { _id: 0, facilityId: 1, name: 1, type: 1, city: 1 },
+    ).lean(),
     disruptionImpact(),
   ]);
   return {

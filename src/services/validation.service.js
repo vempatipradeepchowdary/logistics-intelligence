@@ -152,8 +152,10 @@ function checkRecordCounts(collector, manifest, counts) {
 
 function checkExportConsistency(collector, exportDir, totals) {
   const manifestPath = path.join(exportDir, 'dataset_manifest.json');
+  // Reported relative to the working directory so reports never embed a machine-specific path.
+  const shownPath = path.relative(process.cwd(), manifestPath).split(path.sep).join('/');
   if (!existsSync(manifestPath))
-    return { checked: false, reason: `no export found at ${manifestPath}` };
+    return { checked: false, reason: `no export found at ${shownPath}` };
   const exported = JSON.parse(readFileSync(manifestPath, 'utf8'));
   for (const file of exported.exports?.files ?? []) {
     if (!file.collection) continue;
@@ -164,7 +166,7 @@ function checkExportConsistency(collector, exportDir, totals) {
       actual: `${file.rows} rows`,
     }));
   }
-  return { checked: true, exportDir: manifestPath };
+  return { checked: true, exportDir: shownPath };
 }
 
 /**

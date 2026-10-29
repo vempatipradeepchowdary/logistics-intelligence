@@ -142,7 +142,9 @@ export async function getShipmentDetail(shipmentId) {
     ]),
   ];
   const [disruptions, facilities, violationIndex] = await Promise.all([
-    WeatherEvent.find({ weatherEventId: { $in: weatherIds } }, NO_ID).sort({ startAt: 1 }).lean(),
+    WeatherEvent.find({ weatherEventId: { $in: weatherIds } }, NO_ID)
+      .sort({ startAt: 1 })
+      .lean(),
     Facility.find(
       {
         facilityId: {

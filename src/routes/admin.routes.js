@@ -38,7 +38,12 @@ adminRouter.post(
   validateRequest({ body: validateBody }),
   controller.validate,
 );
-adminRouter.post('/export', mutationLimiter, validateRequest({ body: exportBody }), controller.exportData);
+adminRouter.post(
+  '/export',
+  mutationLimiter,
+  validateRequest({ body: exportBody }),
+  controller.exportData,
+);
 adminRouter.get('/jobs', validateRequest({ query: jobsQuery }), controller.jobs);
 adminRouter.get('/jobs/:jobId', validateRequest({ params: jobIdParams }), controller.jobStatus);
 adminRouter.get(

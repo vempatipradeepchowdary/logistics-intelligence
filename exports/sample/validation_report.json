@@ -1,0 +1,1479 @@
+{
+  "runId": "VAL-mvt1dj5o",
+  "status": "PASS",
+  "startedAt": "2026-10-29T04:21:30.791Z",
+  "finishedAt": "2026-10-29T04:21:32.604Z",
+  "durationMs": 1813,
+  "datasetManifestId": "MAN-mvt13gh2-20261022",
+  "summary": {
+    "totalRecordsChecked": 30830,
+    "recordsCheckedByEntity": {
+      "Carrier": 8,
+      "ServiceLevel": 4,
+      "Facility": 100,
+      "Route": 9326,
+      "WeatherEvent": 120,
+      "FacilityQueue": 12600,
+      "Shipment": 628,
+      "ShipmentLeg": 1892,
+      "TrackingEvent": 3783,
+      "ETAEstimate": 1696,
+      "DelayReason": 15,
+      "GroundTruth": 628,
+      "AnomalyCase": 30
+    },
+    "totalChecks": 681151,
+    "passedChecks": 681111,
+    "failedChecks": 40,
+    "intentionalAnomalies": 40,
+    "unexpectedErrors": 0,
+    "unexpectedWarnings": 0,
+    "anomalyCasesExpected": 30,
+    "anomalyCasesDetected": 30,
+    "missedAnomalies": 0,
+    "unexpectedViolationSample": [],
+    "datasetChecksum": "ae3ae103508713ac1e3f39318c0135519af41d8f7302412697ceb05213d63f19",
+    "exportCheck": {
+      "checked": true,
+      "exportDir": "exports/sample/dataset_manifest.json"
+    }
+  },
+  "rules": [
+    {
+      "ruleId": "SCHEMA_REQUIRED_FIELD",
+      "severity": "ERROR",
+      "entityType": "*",
+      "description": "Required fields are present and non-null",
+      "checked": 366770,
+      "passed": 366770,
+      "failed": 0,
+      "intentional": 0,
+      "unexpected": 0
+    },
+    {
+      "ruleId": "SCHEMA_ENUM_VALUE",
+      "severity": "ERROR",
+      "entityType": "*",
+      "description": "Enumerated fields hold an allowed value",
+      "checked": 66497,
+      "passed": 66497,
+      "failed": 0,
+      "intentional": 0,
+      "unexpected": 0
+    },
+    {
+      "ruleId": "SCHEMA_ID_FORMAT",
+      "severity": "ERROR",
+      "entityType": "*",
+      "description": "Business IDs and references follow the documented format",
+      "checked": 115348,
+      "passed": 115348,
+      "failed": 0,
+      "intentional": 0,
+      "unexpected": 0
+    },
+    {
+      "ruleId": "UNIQUE_BUSINESS_ID",
+      "severity": "CRITICAL",
+      "entityType": "*",
+      "description": "Business IDs are unique within their collection",
+      "checked": 30830,
+      "passed": 30830,
+      "failed": 0,
+      "intentional": 0,
+      "unexpected": 0
+    },
+    {
+      "ruleId": "REF_INTEGRITY",
+      "severity": "ERROR",
+      "entityType": "*",
+      "description": "Every reference points to an existing record of the right type",
+      "checked": 30232,
+      "passed": 30226,
+      "failed": 6,
+      "intentional": 6,
+      "unexpected": 0
+    },
+    {
+      "ruleId": "FACILITY_HIERARCHY",
+      "severity": "ERROR",
+      "entityType": "Facility",
+      "description": "Hubs have no parent; every other facility feeds an existing hub",
+      "checked": 100,
+      "passed": 100,
+      "failed": 0,
+      "intentional": 0,
+      "unexpected": 0
+    },
+    {
+      "ruleId": "ROUTE_STRUCTURE",
+      "severity": "ERROR",
+      "entityType": "Route",
+      "description": "Route legs chain through its stops and distances/planned minutes reconcile",
+      "checked": 9326,
+      "passed": 9326,
+      "failed": 0,
+      "intentional": 0,
+      "unexpected": 0
+    },
+    {
+      "ruleId": "WEATHER_WINDOW_VALID",
+      "severity": "ERROR",
+      "entityType": "WeatherEvent",
+      "description": "Window start < end, issued <= ingested, advisory type consistent with timing",
+      "checked": 120,
+      "passed": 120,
+      "failed": 0,
+      "intentional": 0,
+      "unexpected": 0
+    },
+    {
+      "ruleId": "QUEUE_OBSERVATION_VALID",
+      "severity": "ERROR",
+      "entityType": "FacilityQueue",
+      "description": "Observation time <= ingestion time <= snapshot and wait >= facility baseline",
+      "checked": 12600,
+      "passed": 12600,
+      "failed": 0,
+      "intentional": 0,
+      "unexpected": 0
+    },
+    {
+      "ruleId": "SHIPMENT_ROUTE_CONSISTENCY",
+      "severity": "ERROR",
+      "entityType": "Shipment",
+      "description": "Planned/current routes connect the shipment origin and destination",
+      "checked": 628,
+      "passed": 628,
+      "failed": 0,
+      "intentional": 0,
+      "unexpected": 0
+    },
+    {
+      "ruleId": "SLA_DEADLINE_RECONCILIATION",
+      "severity": "ERROR",
+      "entityType": "Shipment",
+      "description": "Promised delivery and planned pickup match the service-level rules",
+      "checked": 628,
+      "passed": 628,
+      "failed": 0,
+      "intentional": 0,
+      "unexpected": 0
+    },
+    {
+      "ruleId": "TEMPORAL_MILESTONE_ORDER",
+      "severity": "ERROR",
+      "entityType": "Shipment",
+      "description": "createdAt <= pickedUpAt <= deliveredAt <= snapshot and createdAt < promisedDeliveryAt",
+      "checked": 628,
+      "passed": 626,
+      "failed": 2,
+      "intentional": 2,
+      "unexpected": 0
+    },
+    {
+      "ruleId": "SHIPMENT_STATUS_EVENT_MISMATCH",
+      "severity": "ERROR",
+      "entityType": "Shipment",
+      "description": "Recorded status and deliveredAt equal the state derived from tracking events",
+      "checked": 628,
+      "passed": 626,
+      "failed": 2,
+      "intentional": 2,
+      "unexpected": 0
+    },
+    {
+      "ruleId": "SHIPMENT_MILESTONE_RECONCILIATION",
+      "severity": "ERROR",
+      "entityType": "Shipment",
+      "description": "pickedUpAt, statusUpdatedAt and route change fields agree with events",
+      "checked": 628,
+      "passed": 628,
+      "failed": 0,
+      "intentional": 0,
+      "unexpected": 0
+    },
+    {
+      "ruleId": "TRACKING_STALLED",
+      "severity": "WARNING",
+      "entityType": "Shipment",
+      "description": "Undelivered shipments have not been silent for longer than max(120h, 2x planned route time + 24h)",
+      "checked": 78,
+      "passed": 76,
+      "failed": 2,
+      "intentional": 2,
+      "unexpected": 0
+    },
+    {
+      "ruleId": "LEG_SEQUENCE",
+      "severity": "ERROR",
+      "entityType": "ShipmentLeg",
+      "description": "Leg sequence numbers are 1..n without gaps",
+      "checked": 628,
+      "passed": 628,
+      "failed": 0,
+      "intentional": 0,
+      "unexpected": 0
+    },
+    {
+      "ruleId": "LEG_CHAIN_CONTINUITY",
+      "severity": "ERROR",
+      "entityType": "ShipmentLeg",
+      "description": "Active legs match their route leg and chain origin -> destination",
+      "checked": 628,
+      "passed": 626,
+      "failed": 2,
+      "intentional": 2,
+      "unexpected": 0
+    },
+    {
+      "ruleId": "LEG_TIME_ORDER",
+      "severity": "ERROR",
+      "entityType": "ShipmentLeg",
+      "description": "start <= departure <= arrival and each leg starts when the previous one arrived",
+      "checked": 1844,
+      "passed": 1844,
+      "failed": 0,
+      "intentional": 0,
+      "unexpected": 0
+    },
+    {
+      "ruleId": "LEG_DURATION_RECONCILIATION",
+      "severity": "ERROR",
+      "entityType": "ShipmentLeg",
+      "description": "actual dwell + transit = planned dwell + transit + queue + weather + carrier",
+      "checked": 1728,
+      "passed": 1728,
+      "failed": 0,
+      "intentional": 0,
+      "unexpected": 0
+    },
+    {
+      "ruleId": "ROUTE_FACILITY_NOT_ON_ROUTE",
+      "severity": "ERROR",
+      "entityType": "TrackingEvent",
+      "description": "Event facility lies on the shipment planned/current path",
+      "checked": 3781,
+      "passed": 3777,
+      "failed": 4,
+      "intentional": 4,
+      "unexpected": 0
+    },
+    {
+      "ruleId": "ROUTE_SEQUENCE_VIOLATION",
+      "severity": "ERROR",
+      "entityType": "TrackingEvent",
+      "description": "Events visit route stops in non-decreasing route order; pickup at origin, delivery at destination",
+      "checked": 3777,
+      "passed": 3775,
+      "failed": 2,
+      "intentional": 2,
+      "unexpected": 0
+    },
+    {
+      "ruleId": "TEMPORAL_INGESTED_BEFORE_OCCURRED",
+      "severity": "ERROR",
+      "entityType": "TrackingEvent",
+      "description": "ingestedAt >= occurredAt",
+      "checked": 3781,
+      "passed": 3779,
+      "failed": 2,
+      "intentional": 2,
+      "unexpected": 0
+    },
+    {
+      "ruleId": "TEMPORAL_LATE_INGESTION",
+      "severity": "WARNING",
+      "entityType": "TrackingEvent",
+      "description": "Ingestion lag <= 6h (late-arriving event policy threshold)",
+      "checked": 3781,
+      "passed": 3779,
+      "failed": 2,
+      "intentional": 2,
+      "unexpected": 0
+    },
+    {
+      "ruleId": "TEMPORAL_EVENT_BEFORE_CREATION",
+      "severity": "ERROR",
+      "entityType": "TrackingEvent",
+      "description": "Events do not occur before the shipment was created",
+      "checked": 3781,
+      "passed": 3779,
+      "failed": 2,
+      "intentional": 2,
+      "unexpected": 0
+    },
+    {
+      "ruleId": "TEMPORAL_AFTER_SNAPSHOT",
+      "severity": "ERROR",
+      "entityType": "TrackingEvent",
+      "description": "No event occurs or is ingested after the dataset snapshot time",
+      "checked": 3781,
+      "passed": 3781,
+      "failed": 0,
+      "intentional": 0,
+      "unexpected": 0
+    },
+    {
+      "ruleId": "EVENT_DUPLICATE",
+      "severity": "ERROR",
+      "entityType": "TrackingEvent",
+      "description": "No two events share type, facility and occurrence time",
+      "checked": 3781,
+      "passed": 3779,
+      "failed": 2,
+      "intentional": 2,
+      "unexpected": 0
+    },
+    {
+      "ruleId": "LIFECYCLE_ILLEGAL_TRANSITION",
+      "severity": "ERROR",
+      "entityType": "TrackingEvent",
+      "description": "Each event is a legal transition of the shipment state machine",
+      "checked": 3781,
+      "passed": 3779,
+      "failed": 2,
+      "intentional": 2,
+      "unexpected": 0
+    },
+    {
+      "ruleId": "ETA_FUTURE_DATA_LEAKAGE",
+      "severity": "CRITICAL",
+      "entityType": "ETAEstimate",
+      "description": "Every input of an ETA snapshot was available at its prediction time",
+      "checked": 1696,
+      "passed": 1692,
+      "failed": 4,
+      "intentional": 4,
+      "unexpected": 0
+    },
+    {
+      "ruleId": "ETA_REPRODUCIBILITY_MISMATCH",
+      "severity": "ERROR",
+      "entityType": "ETAEstimate",
+      "description": "Recomputing the snapshot from stored eligible inputs reproduces it exactly",
+      "checked": 1696,
+      "passed": 1692,
+      "failed": 4,
+      "intentional": 4,
+      "unexpected": 0
+    },
+    {
+      "ruleId": "ETA_TIME_ORDER",
+      "severity": "ERROR",
+      "entityType": "ETAEstimate",
+      "description": "createdAt <= predictionAt <= snapshot and estimatedArrivalAt >= predictionAt",
+      "checked": 1696,
+      "passed": 1696,
+      "failed": 0,
+      "intentional": 0,
+      "unexpected": 0
+    },
+    {
+      "ruleId": "ETA_ADJUSTMENT_RECONCILIATION",
+      "severity": "ERROR",
+      "entityType": "ETAEstimate",
+      "description": "Adjustment components sum to the total remaining minutes",
+      "checked": 1696,
+      "passed": 1694,
+      "failed": 2,
+      "intentional": 2,
+      "unexpected": 0
+    },
+    {
+      "ruleId": "ETA_EVALUATION_RECONCILIATION",
+      "severity": "ERROR",
+      "entityType": "ETAEstimate",
+      "description": "Evaluation metrics equal estimate minus ground-truth delivery",
+      "checked": 1696,
+      "passed": 1696,
+      "failed": 0,
+      "intentional": 0,
+      "unexpected": 0
+    },
+    {
+      "ruleId": "ETA_SNAPSHOT_COVERAGE",
+      "severity": "WARNING",
+      "entityType": "Shipment",
+      "description": "Every scheduled prediction time has a preserved snapshot",
+      "checked": 628,
+      "passed": 628,
+      "failed": 0,
+      "intentional": 0,
+      "unexpected": 0
+    },
+    {
+      "ruleId": "GROUND_TRUTH_LABEL_RECONCILIATION",
+      "severity": "ERROR",
+      "entityType": "GroundTruth",
+      "description": "Ground-truth label equals the documented classification rules applied to source records",
+      "checked": 628,
+      "passed": 628,
+      "failed": 0,
+      "intentional": 0,
+      "unexpected": 0
+    },
+    {
+      "ruleId": "GROUND_TRUTH_DELIVERY_CONSISTENCY",
+      "severity": "ERROR",
+      "entityType": "GroundTruth",
+      "description": "Every shipment has ground truth and observed deliveries match it",
+      "checked": 628,
+      "passed": 628,
+      "failed": 0,
+      "intentional": 0,
+      "unexpected": 0
+    },
+    {
+      "ruleId": "DELAY_RECORD_RECONCILIATION",
+      "severity": "ERROR",
+      "entityType": "DelayReason",
+      "description": "Delay attributions match the attribution rules; exactly one primary reason per delayed shipment",
+      "checked": 628,
+      "passed": 628,
+      "failed": 0,
+      "intentional": 0,
+      "unexpected": 0
+    },
+    {
+      "ruleId": "RECORD_COUNT_TARGET",
+      "severity": "ERROR",
+      "entityType": "Dataset",
+      "description": "Baseline record counts equal the configured targets",
+      "checked": 4,
+      "passed": 4,
+      "failed": 0,
+      "intentional": 0,
+      "unexpected": 0
+    },
+    {
+      "ruleId": "EXPORT_COUNT_CONSISTENCY",
+      "severity": "ERROR",
+      "entityType": "Export",
+      "description": "Exported row counts equal source collection counts",
+      "checked": 12,
+      "passed": 12,
+      "failed": 0,
+      "intentional": 0,
+      "unexpected": 0
+    },
+    {
+      "ruleId": "ANOMALY_DETECTION_COVERAGE",
+      "severity": "CRITICAL",
+      "entityType": "AnomalyCase",
+      "description": "Every labelled anomaly is detected by all of its expected rules",
+      "checked": 30,
+      "passed": 30,
+      "failed": 0,
+      "intentional": 0,
+      "unexpected": 0
+    }
+  ],
+  "anomalyCoverage": [
+    {
+      "anomalyId": "ANM-2026-0001",
+      "scenario": "A_INGESTION_TIME_CONFUSION",
+      "variant": "LATE_ARRIVING_EVENT",
+      "shipmentId": "SHP-2026-900001",
+      "expectedRuleIds": [
+        "TEMPORAL_LATE_INGESTION"
+      ],
+      "detectedRuleIds": [
+        "TEMPORAL_LATE_INGESTION"
+      ],
+      "missingRuleIds": [],
+      "detected": true
+    },
+    {
+      "anomalyId": "ANM-2026-0002",
+      "scenario": "A_INGESTION_TIME_CONFUSION",
+      "variant": "LATE_ARRIVING_EVENT",
+      "shipmentId": "SHP-2026-900002",
+      "expectedRuleIds": [
+        "TEMPORAL_LATE_INGESTION"
+      ],
+      "detectedRuleIds": [
+        "TEMPORAL_LATE_INGESTION"
+      ],
+      "missingRuleIds": [],
+      "detected": true
+    },
+    {
+      "anomalyId": "ANM-2026-0003",
+      "scenario": "A_INGESTION_TIME_CONFUSION",
+      "variant": "INGESTED_BEFORE_OCCURRED",
+      "shipmentId": "SHP-2026-900003",
+      "expectedRuleIds": [
+        "TEMPORAL_INGESTED_BEFORE_OCCURRED"
+      ],
+      "detectedRuleIds": [
+        "TEMPORAL_INGESTED_BEFORE_OCCURRED"
+      ],
+      "missingRuleIds": [],
+      "detected": true
+    },
+    {
+      "anomalyId": "ANM-2026-0004",
+      "scenario": "A_INGESTION_TIME_CONFUSION",
+      "variant": "INGESTED_BEFORE_OCCURRED",
+      "shipmentId": "SHP-2026-900004",
+      "expectedRuleIds": [
+        "TEMPORAL_INGESTED_BEFORE_OCCURRED"
+      ],
+      "detectedRuleIds": [
+        "TEMPORAL_INGESTED_BEFORE_OCCURRED"
+      ],
+      "missingRuleIds": [],
+      "detected": true
+    },
+    {
+      "anomalyId": "ANM-2026-0005",
+      "scenario": "B_IMPOSSIBLE_ROUTE_ORDER",
+      "variant": "SWAPPED_FACILITY_ORDER",
+      "shipmentId": "SHP-2026-900005",
+      "expectedRuleIds": [
+        "ROUTE_SEQUENCE_VIOLATION"
+      ],
+      "detectedRuleIds": [
+        "ROUTE_SEQUENCE_VIOLATION"
+      ],
+      "missingRuleIds": [],
+      "detected": true
+    },
+    {
+      "anomalyId": "ANM-2026-0006",
+      "scenario": "B_IMPOSSIBLE_ROUTE_ORDER",
+      "variant": "SWAPPED_FACILITY_ORDER",
+      "shipmentId": "SHP-2026-900006",
+      "expectedRuleIds": [
+        "ROUTE_SEQUENCE_VIOLATION"
+      ],
+      "detectedRuleIds": [
+        "ROUTE_SEQUENCE_VIOLATION"
+      ],
+      "missingRuleIds": [],
+      "detected": true
+    },
+    {
+      "anomalyId": "ANM-2026-0007",
+      "scenario": "B_IMPOSSIBLE_ROUTE_ORDER",
+      "variant": "FACILITY_NOT_ON_ROUTE",
+      "shipmentId": "SHP-2026-900007",
+      "expectedRuleIds": [
+        "ROUTE_FACILITY_NOT_ON_ROUTE"
+      ],
+      "detectedRuleIds": [
+        "ROUTE_FACILITY_NOT_ON_ROUTE"
+      ],
+      "missingRuleIds": [],
+      "detected": true
+    },
+    {
+      "anomalyId": "ANM-2026-0008",
+      "scenario": "B_IMPOSSIBLE_ROUTE_ORDER",
+      "variant": "FACILITY_NOT_ON_ROUTE",
+      "shipmentId": "SHP-2026-900008",
+      "expectedRuleIds": [
+        "ROUTE_FACILITY_NOT_ON_ROUTE"
+      ],
+      "detectedRuleIds": [
+        "ROUTE_FACILITY_NOT_ON_ROUTE"
+      ],
+      "missingRuleIds": [],
+      "detected": true
+    },
+    {
+      "anomalyId": "ANM-2026-0009",
+      "scenario": "B_IMPOSSIBLE_ROUTE_ORDER",
+      "variant": "LEG_CHAIN_BROKEN",
+      "shipmentId": "SHP-2026-900009",
+      "expectedRuleIds": [
+        "LEG_CHAIN_CONTINUITY"
+      ],
+      "detectedRuleIds": [
+        "LEG_CHAIN_CONTINUITY"
+      ],
+      "missingRuleIds": [],
+      "detected": true
+    },
+    {
+      "anomalyId": "ANM-2026-0010",
+      "scenario": "B_IMPOSSIBLE_ROUTE_ORDER",
+      "variant": "LEG_CHAIN_BROKEN",
+      "shipmentId": "SHP-2026-900010",
+      "expectedRuleIds": [
+        "LEG_CHAIN_CONTINUITY"
+      ],
+      "detectedRuleIds": [
+        "LEG_CHAIN_CONTINUITY"
+      ],
+      "missingRuleIds": [],
+      "detected": true
+    },
+    {
+      "anomalyId": "ANM-2026-0011",
+      "scenario": "C_FUTURE_DATA_LEAKAGE",
+      "variant": "FUTURE_EVENTS_USED",
+      "shipmentId": "SHP-2026-900011",
+      "expectedRuleIds": [
+        "ETA_FUTURE_DATA_LEAKAGE",
+        "ETA_REPRODUCIBILITY_MISMATCH",
+        "ETA_ADJUSTMENT_RECONCILIATION"
+      ],
+      "detectedRuleIds": [
+        "ETA_ADJUSTMENT_RECONCILIATION",
+        "ETA_FUTURE_DATA_LEAKAGE",
+        "ETA_REPRODUCIBILITY_MISMATCH"
+      ],
+      "missingRuleIds": [],
+      "detected": true
+    },
+    {
+      "anomalyId": "ANM-2026-0012",
+      "scenario": "C_FUTURE_DATA_LEAKAGE",
+      "variant": "FUTURE_EVENTS_USED",
+      "shipmentId": "SHP-2026-900012",
+      "expectedRuleIds": [
+        "ETA_FUTURE_DATA_LEAKAGE",
+        "ETA_REPRODUCIBILITY_MISMATCH",
+        "ETA_ADJUSTMENT_RECONCILIATION"
+      ],
+      "detectedRuleIds": [
+        "ETA_ADJUSTMENT_RECONCILIATION",
+        "ETA_FUTURE_DATA_LEAKAGE",
+        "ETA_REPRODUCIBILITY_MISMATCH"
+      ],
+      "missingRuleIds": [],
+      "detected": true
+    },
+    {
+      "anomalyId": "ANM-2026-0013",
+      "scenario": "C_FUTURE_DATA_LEAKAGE",
+      "variant": "FUTURE_WEATHER_USED",
+      "shipmentId": "SHP-2026-900013",
+      "expectedRuleIds": [
+        "ETA_FUTURE_DATA_LEAKAGE",
+        "ETA_REPRODUCIBILITY_MISMATCH"
+      ],
+      "detectedRuleIds": [
+        "ETA_FUTURE_DATA_LEAKAGE",
+        "ETA_REPRODUCIBILITY_MISMATCH"
+      ],
+      "missingRuleIds": [],
+      "detected": true
+    },
+    {
+      "anomalyId": "ANM-2026-0014",
+      "scenario": "C_FUTURE_DATA_LEAKAGE",
+      "variant": "FUTURE_WEATHER_USED",
+      "shipmentId": "SHP-2026-900014",
+      "expectedRuleIds": [
+        "ETA_FUTURE_DATA_LEAKAGE",
+        "ETA_REPRODUCIBILITY_MISMATCH"
+      ],
+      "detectedRuleIds": [
+        "ETA_FUTURE_DATA_LEAKAGE",
+        "ETA_REPRODUCIBILITY_MISMATCH"
+      ],
+      "missingRuleIds": [],
+      "detected": true
+    },
+    {
+      "anomalyId": "ANM-2026-0015",
+      "scenario": "D_DELIVERED_STILL_IN_TRANSIT",
+      "variant": "DELIVERED_STATUS_IN_TRANSIT",
+      "shipmentId": "SHP-2026-900015",
+      "expectedRuleIds": [
+        "SHIPMENT_STATUS_EVENT_MISMATCH"
+      ],
+      "detectedRuleIds": [
+        "SHIPMENT_STATUS_EVENT_MISMATCH"
+      ],
+      "missingRuleIds": [],
+      "detected": true
+    },
+    {
+      "anomalyId": "ANM-2026-0016",
+      "scenario": "D_DELIVERED_STILL_IN_TRANSIT",
+      "variant": "DELIVERED_STATUS_IN_TRANSIT",
+      "shipmentId": "SHP-2026-900016",
+      "expectedRuleIds": [
+        "SHIPMENT_STATUS_EVENT_MISMATCH"
+      ],
+      "detectedRuleIds": [
+        "SHIPMENT_STATUS_EVENT_MISMATCH"
+      ],
+      "missingRuleIds": [],
+      "detected": true
+    },
+    {
+      "anomalyId": "ANM-2026-0017",
+      "scenario": "E_DUPLICATE_EVENT",
+      "variant": "DUPLICATE_SCAN",
+      "shipmentId": "SHP-2026-900017",
+      "expectedRuleIds": [
+        "EVENT_DUPLICATE"
+      ],
+      "detectedRuleIds": [
+        "EVENT_DUPLICATE"
+      ],
+      "missingRuleIds": [],
+      "detected": true
+    },
+    {
+      "anomalyId": "ANM-2026-0018",
+      "scenario": "E_DUPLICATE_EVENT",
+      "variant": "DUPLICATE_SCAN",
+      "shipmentId": "SHP-2026-900018",
+      "expectedRuleIds": [
+        "EVENT_DUPLICATE"
+      ],
+      "detectedRuleIds": [
+        "EVENT_DUPLICATE"
+      ],
+      "missingRuleIds": [],
+      "detected": true
+    },
+    {
+      "anomalyId": "ANM-2026-0019",
+      "scenario": "F_INVALID_REFERENCE",
+      "variant": "EVENT_UNKNOWN_FACILITY",
+      "shipmentId": "SHP-2026-900019",
+      "expectedRuleIds": [
+        "REF_INTEGRITY",
+        "ROUTE_FACILITY_NOT_ON_ROUTE"
+      ],
+      "detectedRuleIds": [
+        "REF_INTEGRITY",
+        "ROUTE_FACILITY_NOT_ON_ROUTE"
+      ],
+      "missingRuleIds": [],
+      "detected": true
+    },
+    {
+      "anomalyId": "ANM-2026-0020",
+      "scenario": "F_INVALID_REFERENCE",
+      "variant": "EVENT_UNKNOWN_FACILITY",
+      "shipmentId": "SHP-2026-900020",
+      "expectedRuleIds": [
+        "REF_INTEGRITY",
+        "ROUTE_FACILITY_NOT_ON_ROUTE"
+      ],
+      "detectedRuleIds": [
+        "REF_INTEGRITY",
+        "ROUTE_FACILITY_NOT_ON_ROUTE"
+      ],
+      "missingRuleIds": [],
+      "detected": true
+    },
+    {
+      "anomalyId": "ANM-2026-0021",
+      "scenario": "F_INVALID_REFERENCE",
+      "variant": "SHIPMENT_UNKNOWN_CARRIER",
+      "shipmentId": "SHP-2026-900021",
+      "expectedRuleIds": [
+        "REF_INTEGRITY"
+      ],
+      "detectedRuleIds": [
+        "REF_INTEGRITY"
+      ],
+      "missingRuleIds": [],
+      "detected": true
+    },
+    {
+      "anomalyId": "ANM-2026-0022",
+      "scenario": "F_INVALID_REFERENCE",
+      "variant": "SHIPMENT_UNKNOWN_CARRIER",
+      "shipmentId": "SHP-2026-900022",
+      "expectedRuleIds": [
+        "REF_INTEGRITY"
+      ],
+      "detectedRuleIds": [
+        "REF_INTEGRITY"
+      ],
+      "missingRuleIds": [],
+      "detected": true
+    },
+    {
+      "anomalyId": "ANM-2026-0023",
+      "scenario": "F_INVALID_REFERENCE",
+      "variant": "ORPHAN_EVENT",
+      "shipmentId": "SHP-2026-900023",
+      "expectedRuleIds": [
+        "REF_INTEGRITY"
+      ],
+      "detectedRuleIds": [
+        "REF_INTEGRITY"
+      ],
+      "missingRuleIds": [],
+      "detected": true
+    },
+    {
+      "anomalyId": "ANM-2026-0024",
+      "scenario": "F_INVALID_REFERENCE",
+      "variant": "ORPHAN_EVENT",
+      "shipmentId": "SHP-2026-900024",
+      "expectedRuleIds": [
+        "REF_INTEGRITY"
+      ],
+      "detectedRuleIds": [
+        "REF_INTEGRITY"
+      ],
+      "missingRuleIds": [],
+      "detected": true
+    },
+    {
+      "anomalyId": "ANM-2026-0025",
+      "scenario": "G_INVALID_TIMESTAMP",
+      "variant": "EVENT_BEFORE_CREATION",
+      "shipmentId": "SHP-2026-900025",
+      "expectedRuleIds": [
+        "TEMPORAL_EVENT_BEFORE_CREATION",
+        "TEMPORAL_MILESTONE_ORDER"
+      ],
+      "detectedRuleIds": [
+        "TEMPORAL_EVENT_BEFORE_CREATION",
+        "TEMPORAL_MILESTONE_ORDER"
+      ],
+      "missingRuleIds": [],
+      "detected": true
+    },
+    {
+      "anomalyId": "ANM-2026-0026",
+      "scenario": "G_INVALID_TIMESTAMP",
+      "variant": "EVENT_BEFORE_CREATION",
+      "shipmentId": "SHP-2026-900026",
+      "expectedRuleIds": [
+        "TEMPORAL_EVENT_BEFORE_CREATION",
+        "TEMPORAL_MILESTONE_ORDER"
+      ],
+      "detectedRuleIds": [
+        "TEMPORAL_EVENT_BEFORE_CREATION",
+        "TEMPORAL_MILESTONE_ORDER"
+      ],
+      "missingRuleIds": [],
+      "detected": true
+    },
+    {
+      "anomalyId": "ANM-2026-0027",
+      "scenario": "H_ILLEGAL_LIFECYCLE",
+      "variant": "SCAN_AFTER_DELIVERY",
+      "shipmentId": "SHP-2026-900027",
+      "expectedRuleIds": [
+        "LIFECYCLE_ILLEGAL_TRANSITION"
+      ],
+      "detectedRuleIds": [
+        "LIFECYCLE_ILLEGAL_TRANSITION"
+      ],
+      "missingRuleIds": [],
+      "detected": true
+    },
+    {
+      "anomalyId": "ANM-2026-0028",
+      "scenario": "H_ILLEGAL_LIFECYCLE",
+      "variant": "SCAN_AFTER_DELIVERY",
+      "shipmentId": "SHP-2026-900028",
+      "expectedRuleIds": [
+        "LIFECYCLE_ILLEGAL_TRANSITION"
+      ],
+      "detectedRuleIds": [
+        "LIFECYCLE_ILLEGAL_TRANSITION"
+      ],
+      "missingRuleIds": [],
+      "detected": true
+    },
+    {
+      "anomalyId": "ANM-2026-0029",
+      "scenario": "I_MISSING_EVENT_GAP",
+      "variant": "TRACKING_STALLED",
+      "shipmentId": "SHP-2026-900029",
+      "expectedRuleIds": [
+        "TRACKING_STALLED"
+      ],
+      "detectedRuleIds": [
+        "TRACKING_STALLED"
+      ],
+      "missingRuleIds": [],
+      "detected": true
+    },
+    {
+      "anomalyId": "ANM-2026-0030",
+      "scenario": "I_MISSING_EVENT_GAP",
+      "variant": "TRACKING_STALLED",
+      "shipmentId": "SHP-2026-900030",
+      "expectedRuleIds": [
+        "TRACKING_STALLED"
+      ],
+      "detectedRuleIds": [
+        "TRACKING_STALLED"
+      ],
+      "missingRuleIds": [],
+      "detected": true
+    }
+  ],
+  "violations": [
+    {
+      "ruleId": "TEMPORAL_LATE_INGESTION",
+      "severity": "WARNING",
+      "entityType": "TrackingEvent",
+      "recordId": "EVT-SHP-2026-900001-000003",
+      "shipmentId": "SHP-2026-900001",
+      "status": "FAILED",
+      "classification": "INTENTIONAL_ANOMALY",
+      "anomalyId": "ANM-2026-0001",
+      "expected": "ingestion lag <= 360 min",
+      "actual": "lag 1800 min (occurred 2026-01-03T07:48:00.000Z, ingested 2026-01-04T13:48:00.000Z)",
+      "explanation": "Late-arriving event: retained with its true occurrence time, excluded from any ETA predicted before its ingestion",
+      "recommendedCorrection": "Event is retained with its true occurrence time; historical ETAs before ingestion must exclude it"
+    },
+    {
+      "ruleId": "TEMPORAL_LATE_INGESTION",
+      "severity": "WARNING",
+      "entityType": "TrackingEvent",
+      "recordId": "EVT-SHP-2026-900002-000004",
+      "shipmentId": "SHP-2026-900002",
+      "status": "FAILED",
+      "classification": "INTENTIONAL_ANOMALY",
+      "anomalyId": "ANM-2026-0002",
+      "expected": "ingestion lag <= 360 min",
+      "actual": "lag 1800 min (occurred 2026-01-05T15:58:00.000Z, ingested 2026-01-06T21:58:00.000Z)",
+      "explanation": "Late-arriving event: retained with its true occurrence time, excluded from any ETA predicted before its ingestion",
+      "recommendedCorrection": "Event is retained with its true occurrence time; historical ETAs before ingestion must exclude it"
+    },
+    {
+      "ruleId": "TEMPORAL_INGESTED_BEFORE_OCCURRED",
+      "severity": "ERROR",
+      "entityType": "TrackingEvent",
+      "recordId": "EVT-SHP-2026-900003-000002",
+      "shipmentId": "SHP-2026-900003",
+      "status": "FAILED",
+      "classification": "INTENTIONAL_ANOMALY",
+      "anomalyId": "ANM-2026-0003",
+      "expected": "ingestedAt >= occurredAt",
+      "actual": "occurredAt=2026-01-02T09:09:00.000Z ingestedAt=2026-01-02T06:09:00.000Z",
+      "explanation": "ingestedAt >= occurredAt",
+      "recommendedCorrection": "Fix the device clock / timestamp mapping"
+    },
+    {
+      "ruleId": "TEMPORAL_INGESTED_BEFORE_OCCURRED",
+      "severity": "ERROR",
+      "entityType": "TrackingEvent",
+      "recordId": "EVT-SHP-2026-900004-000002",
+      "shipmentId": "SHP-2026-900004",
+      "status": "FAILED",
+      "classification": "INTENTIONAL_ANOMALY",
+      "anomalyId": "ANM-2026-0004",
+      "expected": "ingestedAt >= occurredAt",
+      "actual": "occurredAt=2026-01-02T10:13:00.000Z ingestedAt=2026-01-02T07:13:00.000Z",
+      "explanation": "ingestedAt >= occurredAt",
+      "recommendedCorrection": "Fix the device clock / timestamp mapping"
+    },
+    {
+      "ruleId": "ROUTE_SEQUENCE_VIOLATION",
+      "severity": "ERROR",
+      "entityType": "TrackingEvent",
+      "recordId": "EVT-SHP-2026-900005-000003",
+      "shipmentId": "SHP-2026-900005",
+      "status": "FAILED",
+      "classification": "INTENTIONAL_ANOMALY",
+      "anomalyId": "ANM-2026-0005",
+      "expected": "non-decreasing position along the route",
+      "actual": "ARRIVED_AT_FACILITY at FAC-008 (2026-01-04T18:35:00.000Z): moves back from stop 2 (FAC-001) to stop 1",
+      "explanation": "Events visit route stops in non-decreasing route order; pickup at origin, delivery at destination",
+      "recommendedCorrection": "Correct the facility or timestamp of the out-of-order event"
+    },
+    {
+      "ruleId": "ROUTE_SEQUENCE_VIOLATION",
+      "severity": "ERROR",
+      "entityType": "TrackingEvent",
+      "recordId": "EVT-SHP-2026-900006-000003",
+      "shipmentId": "SHP-2026-900006",
+      "status": "FAILED",
+      "classification": "INTENTIONAL_ANOMALY",
+      "anomalyId": "ANM-2026-0006",
+      "expected": "non-decreasing position along the route",
+      "actual": "ARRIVED_AT_FACILITY at FAC-005 (2026-01-03T15:34:00.000Z): moves back from stop 2 (FAC-001) to stop 1",
+      "explanation": "Events visit route stops in non-decreasing route order; pickup at origin, delivery at destination",
+      "recommendedCorrection": "Correct the facility or timestamp of the out-of-order event"
+    },
+    {
+      "ruleId": "ROUTE_FACILITY_NOT_ON_ROUTE",
+      "severity": "ERROR",
+      "entityType": "TrackingEvent",
+      "recordId": "EVT-SHP-2026-900007-000003",
+      "shipmentId": "SHP-2026-900007",
+      "status": "FAILED",
+      "classification": "INTENTIONAL_ANOMALY",
+      "anomalyId": "ANM-2026-0007",
+      "expected": "facility on path [FAC-098 > FAC-004 > FAC-001 > FAC-094]",
+      "actual": "ARRIVED_AT_FACILITY at FAC-002",
+      "explanation": "Event facility lies on the shipment planned/current path",
+      "recommendedCorrection": "Verify scanner facility code; correct or quarantine the event"
+    },
+    {
+      "ruleId": "ROUTE_FACILITY_NOT_ON_ROUTE",
+      "severity": "ERROR",
+      "entityType": "TrackingEvent",
+      "recordId": "EVT-SHP-2026-900008-000003",
+      "shipmentId": "SHP-2026-900008",
+      "status": "FAILED",
+      "classification": "INTENTIONAL_ANOMALY",
+      "anomalyId": "ANM-2026-0008",
+      "expected": "facility on path [FAC-039 > FAC-009 > FAC-012 > FAC-042]",
+      "actual": "ARRIVED_AT_FACILITY at FAC-001",
+      "explanation": "Event facility lies on the shipment planned/current path",
+      "recommendedCorrection": "Verify scanner facility code; correct or quarantine the event"
+    },
+    {
+      "ruleId": "LEG_CHAIN_CONTINUITY",
+      "severity": "ERROR",
+      "entityType": "ShipmentLeg",
+      "recordId": "LEG-SHP-2026-900009-02",
+      "shipmentId": "SHP-2026-900009",
+      "status": "FAILED",
+      "classification": "INTENTIONAL_ANOMALY",
+      "anomalyId": "ANM-2026-0009",
+      "expected": "active legs form a continuous chain origin -> destination matching their route legs",
+      "actual": "LEG-SHP-2026-900009-02 starts at FAC-015 but previous leg ended at FAC-001; LEG-SHP-2026-900009-02 does not match RTE-00117 leg 2",
+      "explanation": "Active legs match their route leg and chain origin -> destination",
+      "recommendedCorrection": "Rebuild legs from the shipment route"
+    },
+    {
+      "ruleId": "LEG_CHAIN_CONTINUITY",
+      "severity": "ERROR",
+      "entityType": "ShipmentLeg",
+      "recordId": "LEG-SHP-2026-900010-02",
+      "shipmentId": "SHP-2026-900010",
+      "status": "FAILED",
+      "classification": "INTENTIONAL_ANOMALY",
+      "anomalyId": "ANM-2026-0010",
+      "expected": "active legs form a continuous chain origin -> destination matching their route legs",
+      "actual": "LEG-SHP-2026-900010-02 starts at FAC-015 but previous leg ended at FAC-005; LEG-SHP-2026-900010-02 does not match RTE-07289 leg 2",
+      "explanation": "Active legs match their route leg and chain origin -> destination",
+      "recommendedCorrection": "Rebuild legs from the shipment route"
+    },
+    {
+      "ruleId": "ETA_ADJUSTMENT_RECONCILIATION",
+      "severity": "ERROR",
+      "entityType": "ETAEstimate",
+      "recordId": "ETA-SHP-2026-900011-20260102T1155Z",
+      "shipmentId": "SHP-2026-900011",
+      "status": "FAILED",
+      "classification": "INTENTIONAL_ANOMALY",
+      "anomalyId": "ANM-2026-0011",
+      "expected": "components sum to 4355 min (estimatedArrivalAt - predictionAt)",
+      "actual": "{\"baseRemainingMinutes\":2555,\"queueMinutes\":0,\"weatherMinutes\":0,\"holdMinutes\":0,\"interactionMinutes\":0,\"totalRemainingMinutes\":2555}",
+      "explanation": "Adjustment components sum to the total remaining minutes",
+      "recommendedCorrection": "Recompute the adjustment breakdown"
+    },
+    {
+      "ruleId": "ETA_FUTURE_DATA_LEAKAGE",
+      "severity": "CRITICAL",
+      "entityType": "ETAEstimate",
+      "recordId": "ETA-SHP-2026-900011-20260102T1155Z",
+      "shipmentId": "SHP-2026-900011",
+      "status": "FAILED",
+      "classification": "INTENTIONAL_ANOMALY",
+      "anomalyId": "ANM-2026-0011",
+      "expected": "all inputs ingested <= predictionAt 2026-01-02T11:55:00.000Z",
+      "actual": "watermark.maxQueueIngestedAt=2026-01-03T16:18:00.000Z; queue observation FQ-FAC-014-20260103T1600Z ingested 2026-01-03T16:18:00.000Z",
+      "explanation": "Snapshot depends on information that was not available at its prediction time",
+      "recommendedCorrection": "Recompute the snapshot with the eligibility filter (ingestedAt <= predictionAt)"
+    },
+    {
+      "ruleId": "ETA_REPRODUCIBILITY_MISMATCH",
+      "severity": "ERROR",
+      "entityType": "ETAEstimate",
+      "recordId": "ETA-SHP-2026-900011-20260102T1155Z",
+      "shipmentId": "SHP-2026-900011",
+      "status": "FAILED",
+      "classification": "INTENTIONAL_ANOMALY",
+      "anomalyId": "ANM-2026-0011",
+      "expected": "identical snapshot when recomputed from eligible stored inputs",
+      "actual": "inputHash differs; adjustments differ",
+      "explanation": "Recomputing the snapshot from stored eligible inputs reproduces it exactly",
+      "recommendedCorrection": "Investigate engine/config drift; snapshots must be immutable and reproducible"
+    },
+    {
+      "ruleId": "ETA_ADJUSTMENT_RECONCILIATION",
+      "severity": "ERROR",
+      "entityType": "ETAEstimate",
+      "recordId": "ETA-SHP-2026-900012-20260102T1524Z",
+      "shipmentId": "SHP-2026-900012",
+      "status": "FAILED",
+      "classification": "INTENTIONAL_ANOMALY",
+      "anomalyId": "ANM-2026-0012",
+      "expected": "components sum to 5586 min (estimatedArrivalAt - predictionAt)",
+      "actual": "{\"baseRemainingMinutes\":3786,\"queueMinutes\":13,\"weatherMinutes\":54,\"holdMinutes\":0,\"interactionMinutes\":-67,\"totalRemainingMinutes\":3786}",
+      "explanation": "Adjustment components sum to the total remaining minutes",
+      "recommendedCorrection": "Recompute the adjustment breakdown"
+    },
+    {
+      "ruleId": "ETA_FUTURE_DATA_LEAKAGE",
+      "severity": "CRITICAL",
+      "entityType": "ETAEstimate",
+      "recordId": "ETA-SHP-2026-900012-20260102T1524Z",
+      "shipmentId": "SHP-2026-900012",
+      "status": "FAILED",
+      "classification": "INTENTIONAL_ANOMALY",
+      "anomalyId": "ANM-2026-0012",
+      "expected": "all inputs ingested <= predictionAt 2026-01-02T15:24:00.000Z",
+      "actual": "watermark.maxEventIngestedAt=2026-01-03T03:46:00.000Z; watermark.maxQueueIngestedAt=2026-01-03T20:10:00.000Z; watermark.maxWeatherIngestedAt=2026-01-02T18:24:00.000Z; event EVT-SHP-2026-900012-000002 ingested 2026-01-03T03:46:00.000Z; queue observation FQ-FAC-002-20260103T2000Z ingested 2026-01-03T20:10:00.000Z; weather advisory WX-2026-00038 ingested 2026-01-02T18:24:00.000Z; considered 2 events but only 1 were available",
+      "explanation": "Snapshot depends on information that was not available at its prediction time",
+      "recommendedCorrection": "Recompute the snapshot with the eligibility filter (ingestedAt <= predictionAt)"
+    },
+    {
+      "ruleId": "ETA_REPRODUCIBILITY_MISMATCH",
+      "severity": "ERROR",
+      "entityType": "ETAEstimate",
+      "recordId": "ETA-SHP-2026-900012-20260102T1524Z",
+      "shipmentId": "SHP-2026-900012",
+      "status": "FAILED",
+      "classification": "INTENTIONAL_ANOMALY",
+      "anomalyId": "ANM-2026-0012",
+      "expected": "identical snapshot when recomputed from eligible stored inputs",
+      "actual": "estimatedArrivalAt stored 2026-01-06T12:30:00.000Z vs recomputed 2026-01-05T15:11:00.000Z; inputHash differs; adjustments differ",
+      "explanation": "Recomputing the snapshot from stored eligible inputs reproduces it exactly",
+      "recommendedCorrection": "Investigate engine/config drift; snapshots must be immutable and reproducible"
+    },
+    {
+      "ruleId": "ETA_FUTURE_DATA_LEAKAGE",
+      "severity": "CRITICAL",
+      "entityType": "ETAEstimate",
+      "recordId": "ETA-SHP-2026-900013-20260102T1533Z",
+      "shipmentId": "SHP-2026-900013",
+      "status": "FAILED",
+      "classification": "INTENTIONAL_ANOMALY",
+      "anomalyId": "ANM-2026-0013",
+      "expected": "all inputs ingested <= predictionAt 2026-01-02T15:33:00.000Z",
+      "actual": "watermark.maxWeatherIngestedAt=2026-01-02T17:24:00.000Z; weather advisory WX-2026-00022 ingested 2026-01-02T17:24:00.000Z",
+      "explanation": "Snapshot depends on information that was not available at its prediction time",
+      "recommendedCorrection": "Recompute the snapshot with the eligibility filter (ingestedAt <= predictionAt)"
+    },
+    {
+      "ruleId": "ETA_REPRODUCIBILITY_MISMATCH",
+      "severity": "ERROR",
+      "entityType": "ETAEstimate",
+      "recordId": "ETA-SHP-2026-900013-20260102T1533Z",
+      "shipmentId": "SHP-2026-900013",
+      "status": "FAILED",
+      "classification": "INTENTIONAL_ANOMALY",
+      "anomalyId": "ANM-2026-0013",
+      "expected": "identical snapshot when recomputed from eligible stored inputs",
+      "actual": "estimatedArrivalAt stored 2026-01-05T13:30:00.000Z vs recomputed 2026-01-05T12:30:00.000Z; adjustments differ",
+      "explanation": "Recomputing the snapshot from stored eligible inputs reproduces it exactly",
+      "recommendedCorrection": "Investigate engine/config drift; snapshots must be immutable and reproducible"
+    },
+    {
+      "ruleId": "ETA_FUTURE_DATA_LEAKAGE",
+      "severity": "CRITICAL",
+      "entityType": "ETAEstimate",
+      "recordId": "ETA-SHP-2026-900014-20260102T1457Z",
+      "shipmentId": "SHP-2026-900014",
+      "status": "FAILED",
+      "classification": "INTENTIONAL_ANOMALY",
+      "anomalyId": "ANM-2026-0014",
+      "expected": "all inputs ingested <= predictionAt 2026-01-02T14:57:00.000Z",
+      "actual": "watermark.maxWeatherIngestedAt=2026-01-02T17:24:00.000Z; weather advisory WX-2026-00022 ingested 2026-01-02T17:24:00.000Z",
+      "explanation": "Snapshot depends on information that was not available at its prediction time",
+      "recommendedCorrection": "Recompute the snapshot with the eligibility filter (ingestedAt <= predictionAt)"
+    },
+    {
+      "ruleId": "ETA_REPRODUCIBILITY_MISMATCH",
+      "severity": "ERROR",
+      "entityType": "ETAEstimate",
+      "recordId": "ETA-SHP-2026-900014-20260102T1457Z",
+      "shipmentId": "SHP-2026-900014",
+      "status": "FAILED",
+      "classification": "INTENTIONAL_ANOMALY",
+      "anomalyId": "ANM-2026-0014",
+      "expected": "identical snapshot when recomputed from eligible stored inputs",
+      "actual": "estimatedArrivalAt stored 2026-01-04T13:30:00.000Z vs recomputed 2026-01-04T12:30:00.000Z; adjustments differ",
+      "explanation": "Recomputing the snapshot from stored eligible inputs reproduces it exactly",
+      "recommendedCorrection": "Investigate engine/config drift; snapshots must be immutable and reproducible"
+    },
+    {
+      "ruleId": "SHIPMENT_STATUS_EVENT_MISMATCH",
+      "severity": "ERROR",
+      "entityType": "Shipment",
+      "recordId": "SHP-2026-900015",
+      "shipmentId": "SHP-2026-900015",
+      "status": "FAILED",
+      "classification": "INTENTIONAL_ANOMALY",
+      "anomalyId": "ANM-2026-0015",
+      "expected": "status=DELIVERED, deliveredAt=2026-01-05T09:35:00.000Z",
+      "actual": "status=IN_TRANSIT, deliveredAt=null",
+      "explanation": "Recorded status and deliveredAt equal the state derived from tracking events",
+      "recommendedCorrection": "Recompute operational status from the event history"
+    },
+    {
+      "ruleId": "SHIPMENT_STATUS_EVENT_MISMATCH",
+      "severity": "ERROR",
+      "entityType": "Shipment",
+      "recordId": "SHP-2026-900016",
+      "shipmentId": "SHP-2026-900016",
+      "status": "FAILED",
+      "classification": "INTENTIONAL_ANOMALY",
+      "anomalyId": "ANM-2026-0016",
+      "expected": "status=DELIVERED, deliveredAt=2026-01-04T16:14:00.000Z",
+      "actual": "status=IN_TRANSIT, deliveredAt=null",
+      "explanation": "Recorded status and deliveredAt equal the state derived from tracking events",
+      "recommendedCorrection": "Recompute operational status from the event history"
+    },
+    {
+      "ruleId": "EVENT_DUPLICATE",
+      "severity": "ERROR",
+      "entityType": "TrackingEvent",
+      "recordId": "EVT-SHP-2026-900017-000003",
+      "shipmentId": "SHP-2026-900017",
+      "status": "FAILED",
+      "classification": "INTENTIONAL_ANOMALY",
+      "anomalyId": "ANM-2026-0017",
+      "expected": "unique (type, facility, occurredAt)",
+      "actual": "duplicates EVT-SHP-2026-900017-000002 (ARRIVED_AT_FACILITY at FAC-004 2026-01-02T14:27:00.000Z)",
+      "explanation": "No two events share type, facility and occurrence time",
+      "recommendedCorrection": "Deduplicate on (shipment, type, facility, occurredAt)"
+    },
+    {
+      "ruleId": "EVENT_DUPLICATE",
+      "severity": "ERROR",
+      "entityType": "TrackingEvent",
+      "recordId": "EVT-SHP-2026-900018-000003",
+      "shipmentId": "SHP-2026-900018",
+      "status": "FAILED",
+      "classification": "INTENTIONAL_ANOMALY",
+      "anomalyId": "ANM-2026-0018",
+      "expected": "unique (type, facility, occurredAt)",
+      "actual": "duplicates EVT-SHP-2026-900018-000002 (ARRIVED_AT_FACILITY at FAC-009 2026-01-02T15:30:00.000Z)",
+      "explanation": "No two events share type, facility and occurrence time",
+      "recommendedCorrection": "Deduplicate on (shipment, type, facility, occurredAt)"
+    },
+    {
+      "ruleId": "REF_INTEGRITY",
+      "severity": "ERROR",
+      "entityType": "TrackingEvent",
+      "recordId": "EVT-SHP-2026-900019-000004",
+      "shipmentId": "SHP-2026-900019",
+      "status": "FAILED",
+      "classification": "INTENTIONAL_ANOMALY",
+      "anomalyId": "ANM-2026-0019",
+      "expected": "facilityId references an existing Facility",
+      "actual": "facilityId=FAC-999 not found",
+      "explanation": "Every reference points to an existing record of the right type",
+      "recommendedCorrection": "Correct the reference or quarantine the orphan record"
+    },
+    {
+      "ruleId": "ROUTE_FACILITY_NOT_ON_ROUTE",
+      "severity": "ERROR",
+      "entityType": "TrackingEvent",
+      "recordId": "EVT-SHP-2026-900019-000004",
+      "shipmentId": "SHP-2026-900019",
+      "status": "FAILED",
+      "classification": "INTENTIONAL_ANOMALY",
+      "anomalyId": "ANM-2026-0019",
+      "expected": "facility on path [FAC-071 > FAC-009 > FAC-014 > FAC-073]",
+      "actual": "ARRIVED_AT_FACILITY at FAC-999",
+      "explanation": "Event facility lies on the shipment planned/current path",
+      "recommendedCorrection": "Verify scanner facility code; correct or quarantine the event"
+    },
+    {
+      "ruleId": "REF_INTEGRITY",
+      "severity": "ERROR",
+      "entityType": "TrackingEvent",
+      "recordId": "EVT-SHP-2026-900020-000004",
+      "shipmentId": "SHP-2026-900020",
+      "status": "FAILED",
+      "classification": "INTENTIONAL_ANOMALY",
+      "anomalyId": "ANM-2026-0020",
+      "expected": "facilityId references an existing Facility",
+      "actual": "facilityId=FAC-999 not found",
+      "explanation": "Every reference points to an existing record of the right type",
+      "recommendedCorrection": "Correct the reference or quarantine the orphan record"
+    },
+    {
+      "ruleId": "ROUTE_FACILITY_NOT_ON_ROUTE",
+      "severity": "ERROR",
+      "entityType": "TrackingEvent",
+      "recordId": "EVT-SHP-2026-900020-000004",
+      "shipmentId": "SHP-2026-900020",
+      "status": "FAILED",
+      "classification": "INTENTIONAL_ANOMALY",
+      "anomalyId": "ANM-2026-0020",
+      "expected": "facility on path [FAC-083 > FAC-003 > FAC-007 > FAC-037]",
+      "actual": "ARRIVED_AT_FACILITY at FAC-999",
+      "explanation": "Event facility lies on the shipment planned/current path",
+      "recommendedCorrection": "Verify scanner facility code; correct or quarantine the event"
+    },
+    {
+      "ruleId": "REF_INTEGRITY",
+      "severity": "ERROR",
+      "entityType": "Shipment",
+      "recordId": "SHP-2026-900021",
+      "shipmentId": "SHP-2026-900021",
+      "status": "FAILED",
+      "classification": "INTENTIONAL_ANOMALY",
+      "anomalyId": "ANM-2026-0021",
+      "expected": "carrierId references an existing Carrier",
+      "actual": "carrierId=CAR-099 not found",
+      "explanation": "Every reference points to an existing record of the right type",
+      "recommendedCorrection": "Correct the reference or quarantine the orphan record"
+    },
+    {
+      "ruleId": "REF_INTEGRITY",
+      "severity": "ERROR",
+      "entityType": "Shipment",
+      "recordId": "SHP-2026-900022",
+      "shipmentId": "SHP-2026-900022",
+      "status": "FAILED",
+      "classification": "INTENTIONAL_ANOMALY",
+      "anomalyId": "ANM-2026-0022",
+      "expected": "carrierId references an existing Carrier",
+      "actual": "carrierId=CAR-099 not found",
+      "explanation": "Every reference points to an existing record of the right type",
+      "recommendedCorrection": "Correct the reference or quarantine the orphan record"
+    },
+    {
+      "ruleId": "REF_INTEGRITY",
+      "severity": "ERROR",
+      "entityType": "TrackingEvent",
+      "recordId": "EVT-SHP-2026-900023-000001",
+      "shipmentId": "SHP-2026-900023",
+      "status": "FAILED",
+      "classification": "INTENTIONAL_ANOMALY",
+      "anomalyId": "ANM-2026-0023",
+      "expected": "shipmentId references an existing Shipment",
+      "actual": "shipmentId=SHP-2026-900023 not found",
+      "explanation": "Every reference points to an existing record of the right type",
+      "recommendedCorrection": "Correct the reference or quarantine the orphan record"
+    },
+    {
+      "ruleId": "REF_INTEGRITY",
+      "severity": "ERROR",
+      "entityType": "TrackingEvent",
+      "recordId": "EVT-SHP-2026-900024-000001",
+      "shipmentId": "SHP-2026-900024",
+      "status": "FAILED",
+      "classification": "INTENTIONAL_ANOMALY",
+      "anomalyId": "ANM-2026-0024",
+      "expected": "shipmentId references an existing Shipment",
+      "actual": "shipmentId=SHP-2026-900024 not found",
+      "explanation": "Every reference points to an existing record of the right type",
+      "recommendedCorrection": "Correct the reference or quarantine the orphan record"
+    },
+    {
+      "ruleId": "TEMPORAL_EVENT_BEFORE_CREATION",
+      "severity": "ERROR",
+      "entityType": "TrackingEvent",
+      "recordId": "EVT-SHP-2026-900025-000001",
+      "shipmentId": "SHP-2026-900025",
+      "status": "FAILED",
+      "classification": "INTENTIONAL_ANOMALY",
+      "anomalyId": "ANM-2026-0025",
+      "expected": "occurredAt >= shipment createdAt 2026-01-02T14:48:00.000Z",
+      "actual": "occurredAt=2026-01-02T12:48:00.000Z",
+      "explanation": "Events do not occur before the shipment was created",
+      "recommendedCorrection": "Correct the event timestamp"
+    },
+    {
+      "ruleId": "TEMPORAL_MILESTONE_ORDER",
+      "severity": "ERROR",
+      "entityType": "Shipment",
+      "recordId": "SHP-2026-900025",
+      "shipmentId": "SHP-2026-900025",
+      "status": "FAILED",
+      "classification": "INTENTIONAL_ANOMALY",
+      "anomalyId": "ANM-2026-0025",
+      "expected": "createdAt <= pickedUpAt <= deliveredAt <= asOf; createdAt < promisedDeliveryAt",
+      "actual": "pickedUpAt before createdAt (created 2026-01-02T14:48:00.000Z, picked 2026-01-02T12:48:00.000Z, delivered 2026-01-06T11:51:00.000Z)",
+      "explanation": "createdAt <= pickedUpAt <= deliveredAt <= snapshot and createdAt < promisedDeliveryAt",
+      "recommendedCorrection": "Correct the milestone timestamps"
+    },
+    {
+      "ruleId": "TEMPORAL_EVENT_BEFORE_CREATION",
+      "severity": "ERROR",
+      "entityType": "TrackingEvent",
+      "recordId": "EVT-SHP-2026-900026-000001",
+      "shipmentId": "SHP-2026-900026",
+      "status": "FAILED",
+      "classification": "INTENTIONAL_ANOMALY",
+      "anomalyId": "ANM-2026-0026",
+      "expected": "occurredAt >= shipment createdAt 2026-01-02T15:25:00.000Z",
+      "actual": "occurredAt=2026-01-02T13:25:00.000Z",
+      "explanation": "Events do not occur before the shipment was created",
+      "recommendedCorrection": "Correct the event timestamp"
+    },
+    {
+      "ruleId": "TEMPORAL_MILESTONE_ORDER",
+      "severity": "ERROR",
+      "entityType": "Shipment",
+      "recordId": "SHP-2026-900026",
+      "shipmentId": "SHP-2026-900026",
+      "status": "FAILED",
+      "classification": "INTENTIONAL_ANOMALY",
+      "anomalyId": "ANM-2026-0026",
+      "expected": "createdAt <= pickedUpAt <= deliveredAt <= asOf; createdAt < promisedDeliveryAt",
+      "actual": "pickedUpAt before createdAt (created 2026-01-02T15:25:00.000Z, picked 2026-01-02T13:25:00.000Z, delivered 2026-01-05T15:29:00.000Z)",
+      "explanation": "createdAt <= pickedUpAt <= deliveredAt <= snapshot and createdAt < promisedDeliveryAt",
+      "recommendedCorrection": "Correct the milestone timestamps"
+    },
+    {
+      "ruleId": "LIFECYCLE_ILLEGAL_TRANSITION",
+      "severity": "ERROR",
+      "entityType": "TrackingEvent",
+      "recordId": "EVT-SHP-2026-900027-000009",
+      "shipmentId": "SHP-2026-900027",
+      "status": "FAILED",
+      "classification": "INTENTIONAL_ANOMALY",
+      "anomalyId": "ANM-2026-0027",
+      "expected": "legal transition per the shipment state machine",
+      "actual": "DELIVERED -> IN_TRANSIT via ARRIVED_AT_FACILITY at 2026-01-04T22:38:00.000Z",
+      "explanation": "Each event is a legal transition of the shipment state machine",
+      "recommendedCorrection": "Use a documented correction workflow instead of back-dating status"
+    },
+    {
+      "ruleId": "LIFECYCLE_ILLEGAL_TRANSITION",
+      "severity": "ERROR",
+      "entityType": "TrackingEvent",
+      "recordId": "EVT-SHP-2026-900028-000009",
+      "shipmentId": "SHP-2026-900028",
+      "status": "FAILED",
+      "classification": "INTENTIONAL_ANOMALY",
+      "anomalyId": "ANM-2026-0028",
+      "expected": "legal transition per the shipment state machine",
+      "actual": "DELIVERED -> IN_TRANSIT via ARRIVED_AT_FACILITY at 2026-01-06T19:39:00.000Z",
+      "explanation": "Each event is a legal transition of the shipment state machine",
+      "recommendedCorrection": "Use a documented correction workflow instead of back-dating status"
+    },
+    {
+      "ruleId": "TRACKING_STALLED",
+      "severity": "WARNING",
+      "entityType": "Shipment",
+      "recordId": "SHP-2026-900029",
+      "shipmentId": "SHP-2026-900029",
+      "status": "FAILED",
+      "classification": "INTENTIONAL_ANOMALY",
+      "anomalyId": "ANM-2026-0029",
+      "expected": "a scan within 120h before the snapshot",
+      "actual": "last scan PICKED_UP at 2026-01-11T09:43:00.000Z, silent for 254h",
+      "explanation": "Undelivered shipments have not been silent for longer than max(120h, 2x planned route time + 24h)",
+      "recommendedCorrection": "Investigate missing scans / locate the parcel"
+    },
+    {
+      "ruleId": "TRACKING_STALLED",
+      "severity": "WARNING",
+      "entityType": "Shipment",
+      "recordId": "SHP-2026-900030",
+      "shipmentId": "SHP-2026-900030",
+      "status": "FAILED",
+      "classification": "INTENTIONAL_ANOMALY",
+      "anomalyId": "ANM-2026-0030",
+      "expected": "a scan within 120h before the snapshot",
+      "actual": "last scan PICKED_UP at 2026-01-11T10:37:00.000Z, silent for 253h",
+      "explanation": "Undelivered shipments have not been silent for longer than max(120h, 2x planned route time + 24h)",
+      "recommendedCorrection": "Investigate missing scans / locate the parcel"
+    }
+  ],
+  "violationsTruncated": false,
+  "createdAt": "2026-10-29T04:21:32.612Z",
+  "updatedAt": "2026-10-29T04:21:32.612Z"
+}

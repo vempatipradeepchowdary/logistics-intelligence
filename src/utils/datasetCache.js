@@ -12,7 +12,9 @@ export async function datasetVersion({ includeValidation = false } = {}) {
     .lean();
   let version = manifest?.manifestId ?? 'none';
   if (includeValidation) {
-    const run = await ValidationRun.findOne({}, { runId: 1, _id: 0 }).sort({ finishedAt: -1 }).lean();
+    const run = await ValidationRun.findOne({}, { runId: 1, _id: 0 })
+      .sort({ finishedAt: -1 })
+      .lean();
     version += `:${run?.runId ?? 'none'}`;
   }
   return version;

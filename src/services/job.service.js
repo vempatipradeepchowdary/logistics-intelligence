@@ -70,7 +70,10 @@ export async function listJobs({ type, limit }) {
     .sort({ createdAt: -1 })
     .limit(limit)
     .lean();
-  const active = await Job.findOne({ activeLock: ACTIVE_LOCK }, { jobId: 1, type: 1, status: 1, _id: 0 }).lean();
+  const active = await Job.findOne(
+    { activeLock: ACTIVE_LOCK },
+    { jobId: 1, type: 1, status: 1, _id: 0 },
+  ).lean();
   return { items: jobs.map(publicJob), active };
 }
 

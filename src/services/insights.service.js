@@ -161,7 +161,10 @@ export function getEtaBreakdowns(partition) {
         serviceLevelId,
         ...shapeErrors(acc),
       })),
-      overTime: sortedEntries(byWeek).map(([week, acc]) => ({ weekStart: week, ...shapeErrors(acc) })),
+      overTime: sortedEntries(byWeek).map(([week, acc]) => ({
+        weekStart: week,
+        ...shapeErrors(acc),
+      })),
       errorHistogram: HIST_LABELS.map((bucket, k) => ({ bucket, count: histogram[k] })),
       predictedVsActualSample: scatter,
       sampleMethod: `every ${stride}th evaluated snapshot in etaId order (deterministic)`,
@@ -182,7 +185,8 @@ export function getDelayBreakdowns(partition) {
       .cursor({ batchSize: 5000 });
     for await (const g of cursor) {
       const carrierId = attrs.get(g.shipmentId)?.carrierId ?? 'UNKNOWN';
-      if (!carrierRows.has(carrierId)) carrierRows.set(carrierId, { delivered: 0, delayed: 0, delaySum: 0 });
+      if (!carrierRows.has(carrierId))
+        carrierRows.set(carrierId, { delivered: 0, delayed: 0, delaySum: 0 });
       const row = carrierRows.get(carrierId);
       row.delivered += 1;
       if (g.delayClass === 'DELAYED') {

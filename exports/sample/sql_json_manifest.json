@@ -1,0 +1,206 @@
+{
+  "generatedAt": "2026-10-29T04:21:39.447Z",
+  "source": "exports/sample/*.csv",
+  "tables": 27,
+  "bridgeTables": [
+    "carrier_service_levels",
+    "weather_event_facilities",
+    "facility_queue_weather_events",
+    "shipment_last_mile_weather_events",
+    "shipment_leg_weather_events",
+    "eta_input_events",
+    "eta_ignored_events",
+    "eta_queue_observations",
+    "eta_weather_events",
+    "eta_remaining_facilities",
+    "delay_evidence_legs",
+    "delay_evidence_facilities",
+    "delay_evidence_weather_events",
+    "route_stops",
+    "route_legs"
+  ],
+  "rowCounts": {
+    "carriers": {
+      "baseline": 8,
+      "anomaly": 0
+    },
+    "carrier_service_levels": {
+      "baseline": 22,
+      "anomaly": 0
+    },
+    "service_levels": {
+      "baseline": 4,
+      "anomaly": 0
+    },
+    "facilities": {
+      "baseline": 100,
+      "anomaly": 0
+    },
+    "routes": {
+      "baseline": 9326,
+      "anomaly": 0
+    },
+    "route_stops": {
+      "baseline": 36970,
+      "anomaly": 0
+    },
+    "route_legs": {
+      "baseline": 27644,
+      "anomaly": 0
+    },
+    "weather_events": {
+      "baseline": 120,
+      "anomaly": 0
+    },
+    "weather_event_facilities": {
+      "baseline": 482,
+      "anomaly": 0
+    },
+    "facility_queues": {
+      "baseline": 12600,
+      "anomaly": 0
+    },
+    "facility_queue_weather_events": {
+      "baseline": 1486,
+      "anomaly": 0
+    },
+    "shipments": {
+      "baseline": 600,
+      "anomaly": 28
+    },
+    "shipment_last_mile_weather_events": {
+      "baseline": 49,
+      "anomaly": 2
+    },
+    "shipment_legs": {
+      "baseline": 1808,
+      "anomaly": 84
+    },
+    "shipment_leg_weather_events": {
+      "baseline": 316,
+      "anomaly": 19
+    },
+    "tracking_events": {
+      "baseline": 3600,
+      "anomaly": 183
+    },
+    "eta_estimates": {
+      "baseline": 1600,
+      "anomaly": 96
+    },
+    "eta_queue_observations": {
+      "baseline": 1745,
+      "anomaly": 127
+    },
+    "eta_remaining_facilities": {
+      "baseline": 4591,
+      "anomaly": 278
+    },
+    "eta_input_events": {
+      "baseline": 3231,
+      "anomaly": 196
+    },
+    "eta_weather_events": {
+      "baseline": 185,
+      "anomaly": 18
+    },
+    "eta_ignored_events": {
+      "baseline": 0,
+      "anomaly": 11
+    },
+    "delay_reasons": {
+      "baseline": 12,
+      "anomaly": 3
+    },
+    "delay_evidence_legs": {
+      "baseline": 24,
+      "anomaly": 6
+    },
+    "delay_evidence_facilities": {
+      "baseline": 14,
+      "anomaly": 3
+    },
+    "delay_evidence_weather_events": {
+      "baseline": 9,
+      "anomaly": 1
+    },
+    "ground_truth": {
+      "baseline": 600,
+      "anomaly": 28
+    }
+  },
+  "files": [
+    {
+      "file": "sql/schema.sql",
+      "sha256": "df68d40675cc843928fecc75e8b8ebe9fdf7c1bd14080ac5fabc17a096585602"
+    },
+    {
+      "file": "sql/seed.sql",
+      "sha256": "e31add0e6e5729cc80435c314e6f4b09f6c7b834b977166c2de90d9832fa1833"
+    },
+    {
+      "file": "sql/seed_anomalies.sql",
+      "sha256": "3c4d169dcd2f2b39e68c765bd753dc95099e7f8cf9bff2c26a98f7d8bad39e8e"
+    },
+    {
+      "file": "json/carriers.json",
+      "sha256": "ee978933237580339f4ed5b544246a0cc1f897c7961e06efc302f2b9e70e9f06"
+    },
+    {
+      "file": "json/service_levels.json",
+      "sha256": "980963d33305147c013f020a0a0b4f46a4f776aea56e50aa8f1e886e40b95bda"
+    },
+    {
+      "file": "json/facilities.json",
+      "sha256": "d92b87e2448e524360231e72c7a7865b9642b1ecc1ed35a5e324a5d96c97ac84"
+    },
+    {
+      "file": "json/routes.json",
+      "sha256": "630155756699b3da879ca6efbd991688d16c801c7276849f0d6ca753f76286c7"
+    },
+    {
+      "file": "json/weather_events.json",
+      "sha256": "95a3b082695ff2ee9cffcc69744894272a4a907432258ff58b1adb1ebcef796a"
+    },
+    {
+      "file": "json/facility_queues.json",
+      "sha256": "e3cefc3f1b9030f84768a26daa68fa4b38c2c70fa1137fb4d7bf99527c1856f2"
+    },
+    {
+      "file": "json/shipments.json",
+      "sha256": "52911194da16795b12a39f9b8575bff5990971bfce10700f417ac467a20d5d8a"
+    },
+    {
+      "file": "json/shipment_legs.json",
+      "sha256": "9dfb6cfed7c286415fe4571b20624e2a5fae76475043a196ed0300abbfc72050"
+    },
+    {
+      "file": "json/tracking_events.json",
+      "sha256": "809bf7346c315ec912cd062ced9238e6206d10afd8f71eb54bc026a7aacc0089"
+    },
+    {
+      "file": "json/eta_estimates.json",
+      "sha256": "2acd0591b44a96771bc128f82d10c9fd8f436f6e3ac8ca2961f13d77bb562cf1"
+    },
+    {
+      "file": "json/delay_reasons.json",
+      "sha256": "2e8303b4090d2a791a66d9e1d86213798077805f4f7410c4ca7d5c75b4d1f5af"
+    },
+    {
+      "file": "json/ground_truth.json",
+      "sha256": "9d6c355123379d2b9a5c82a0031f39eef83124dd903c91fe99f4b750a6b4118f"
+    }
+  ],
+  "verification": {
+    "engine": "SQLite 3.50.0 (node:sqlite)",
+    "baselineForeignKeyViolations": 0,
+    "anomalyForeignKeyViolations": 8,
+    "anomalyViolationTables": [
+      "shipments",
+      "tracking_events"
+    ],
+    "rowCountsMatchSeeds": true,
+    "rowCountsMatchCsv": true,
+    "passed": true
+  }
+}

@@ -4,6 +4,7 @@ node_modules/
 !.env.example
 coverage/
 exports/*
+!exports/sample/
 !exports/.gitkeep
 !exports/README.md
 *.log

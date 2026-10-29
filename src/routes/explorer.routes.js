@@ -29,7 +29,11 @@ facilityRouter.get(
 export const disruptionRouter = Router();
 disruptionRouter.get('/', validateRequest({ query: disruptionsQuery }), controller.disruptions);
 disruptionRouter.get('/timeline', controller.disruptionsTimeline);
-disruptionRouter.get('/:id', validateRequest({ params: disruptionIdParams }), controller.disruption);
+disruptionRouter.get(
+  '/:id',
+  validateRequest({ params: disruptionIdParams }),
+  controller.disruption,
+);
 
 export const etaRouter = Router();
 etaRouter.get('/', validateRequest({ query: etasQuery }), controller.etas);

@@ -1,0 +1,6 @@
+[
+{"serviceLevelId":"SL-ECONOMY","name":"Economy Ground","transportMode":"GROUND","transitDaysByZone":{"Z1":2,"Z2":3,"Z3":4,"Z4":5},"pickupCutoffMinuteUtc":900,"deadlineMinuteUtc":1439,"handlingFactor":2,"atRiskBufferMinutes":360,"priority":4,"mixWeight":16},
+{"serviceLevelId":"SL-EXPRESS","name":"Express (1-2 Day Air)","transportMode":"AIR","transitDaysByZone":{"Z1":1,"Z2":1,"Z3":2,"Z4":2},"pickupCutoffMinuteUtc":1020,"deadlineMinuteUtc":1439,"handlingFactor":0.5,"atRiskBufferMinutes":120,"priority":1,"mixWeight":14},
+{"serviceLevelId":"SL-PRIORITY","name":"Priority Two Day","transportMode":"AIR","transitDaysByZone":{"Z1":2,"Z2":2,"Z3":2,"Z4":2},"pickupCutoffMinuteUtc":1020,"deadlineMinuteUtc":1439,"handlingFactor":0.75,"atRiskBufferMinutes":180,"priority":2,"mixWeight":24},
+{"serviceLevelId":"SL-STANDARD","name":"Standard Ground","transportMode":"GROUND","transitDaysByZone":{"Z1":2,"Z2":2,"Z3":3,"Z4":5},"pickupCutoffMinuteUtc":960,"deadlineMinuteUtc":1439,"handlingFactor":1,"atRiskBufferMinutes":240,"priority":3,"mixWeight":46}
+]
