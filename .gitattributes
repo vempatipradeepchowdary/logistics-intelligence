@@ -1,0 +1,2 @@
+# Deliverables are stored byte-for-byte so the SHA-256 values in their manifests match on every OS.
+exports/sample/** -text
