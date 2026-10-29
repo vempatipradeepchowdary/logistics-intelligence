@@ -303,6 +303,7 @@ const schema = [
   '-- Relational schema generated from the MongoDB data model (src/scripts/exportSqlJson.js).',
   '-- Portable SQL (tested on SQLite 3.50; types are PostgreSQL-compatible).',
   '-- Many-to-many links embedded as arrays in MongoDB are normalised into bridge tables.',
+  '-- Foreign keys are DEFERRABLE INITIALLY DEFERRED: checked when each seed file COMMITs.',
   '',
 ];
 for (const name of Object.keys(TABLES)) {
@@ -333,7 +334,12 @@ for (const b of BRIDGES) {
 // ---------------------------------------------------------------- seeds + JSON
 mkdirSync(path.join(root, 'sql'), { recursive: true });
 mkdirSync(path.join(root, 'json'), { recursive: true });
-writeFileSync(path.join(root, 'sql', 'schema.sql'), `${schema.join('\n')}\n`);
+// Foreign keys are checked at COMMIT, so rows that reference later rows of the same table (station ->
+// parent hub, alternate route -> primary route) load with enforcement on, in SQLite and PostgreSQL.
+const schemaSql = schema
+  .join('\n')
+  .replace(/(REFERENCES \w+ \(\w+\))/g, '$1 DEFERRABLE INITIALLY DEFERRED');
+writeFileSync(path.join(root, 'sql', 'schema.sql'), `${schemaSql}\n`);
 
 const seed = {
   BASELINE: await writer(path.join(root, 'sql', 'seed.sql')),

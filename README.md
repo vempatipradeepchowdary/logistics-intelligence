@@ -60,6 +60,11 @@ sqlite3 sample.db ".read schema.sql" ".read seed.sql" "PRAGMA foreign_key_check;
 sqlite3 sample.db ".read seed_anomalies.sql" "PRAGMA foreign_key_check;"            # 8 rows: the intentional bad references
 ```
 
+Foreign keys are `DEFERRABLE INITIALLY DEFERRED`, so `seed.sql` also loads with enforcement on
+(`PRAGMA foreign_keys = ON`, or PostgreSQL). `seed_anomalies.sql` holds the deliberate bad references,
+so with enforcement on it is rejected at COMMIT; load it with enforcement off (the `sqlite3` default) to
+inspect the anomalies.
+
 The full-volume export is not committed (CSV 201 MB, SQL 268 MB, JSON 451 MB; GitHub rejects files
 over 100 MB). It is byte-for-byte reproducible with the commands in [section 4](#4-how-to-run-everything--step-by-step).
 

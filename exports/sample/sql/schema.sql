@@ -1,6 +1,7 @@
 -- Relational schema generated from the MongoDB data model (src/scripts/exportSqlJson.js).
 -- Portable SQL (tested on SQLite 3.50; types are PostgreSQL-compatible).
 -- Many-to-many links embedded as arrays in MongoDB are normalised into bridge tables.
+-- Foreign keys are DEFERRABLE INITIALLY DEFERRED: checked when each seed file COMMITs.
 
 CREATE TABLE carriers (
   carrier_id TEXT PRIMARY KEY,
@@ -47,7 +48,7 @@ CREATE TABLE facilities (
   base_processing_minutes NUMERIC,
   baseline_queue_wait_minutes NUMERIC,
   operating_status TEXT,
-  FOREIGN KEY (parent_hub_id) REFERENCES facilities (facility_id)
+  FOREIGN KEY (parent_hub_id) REFERENCES facilities (facility_id) DEFERRABLE INITIALLY DEFERRED
 );
 
 CREATE TABLE routes (
@@ -60,9 +61,9 @@ CREATE TABLE routes (
   total_distance_km NUMERIC,
   distance_zone TEXT,
   effective_from TIMESTAMP,
-  FOREIGN KEY (primary_route_id) REFERENCES routes (route_id),
-  FOREIGN KEY (origin_facility_id) REFERENCES facilities (facility_id),
-  FOREIGN KEY (destination_facility_id) REFERENCES facilities (facility_id)
+  FOREIGN KEY (primary_route_id) REFERENCES routes (route_id) DEFERRABLE INITIALLY DEFERRED,
+  FOREIGN KEY (origin_facility_id) REFERENCES facilities (facility_id) DEFERRABLE INITIALLY DEFERRED,
+  FOREIGN KEY (destination_facility_id) REFERENCES facilities (facility_id) DEFERRABLE INITIALLY DEFERRED
 );
 
 CREATE TABLE weather_events (
@@ -78,7 +79,7 @@ CREATE TABLE weather_events (
   ingested_at TIMESTAMP,
   expected_delay_minutes NUMERIC,
   transit_slowdown_pct NUMERIC,
-  FOREIGN KEY (center_facility_id) REFERENCES facilities (facility_id)
+  FOREIGN KEY (center_facility_id) REFERENCES facilities (facility_id) DEFERRABLE INITIALLY DEFERRED
 );
 
 CREATE TABLE facility_queues (
@@ -93,7 +94,7 @@ CREATE TABLE facility_queues (
   estimated_wait_minutes NUMERIC,
   baseline_wait_minutes NUMERIC,
   congestion_level TEXT,
-  FOREIGN KEY (facility_id) REFERENCES facilities (facility_id)
+  FOREIGN KEY (facility_id) REFERENCES facilities (facility_id) DEFERRABLE INITIALLY DEFERRED
 );
 
 CREATE TABLE shipments (
@@ -131,15 +132,15 @@ CREATE TABLE shipments (
   last_mile_attempt_failed BOOLEAN,
   last_mile_attempt_delay_minutes NUMERIC,
   data_as_of TIMESTAMP,
-  FOREIGN KEY (carrier_id) REFERENCES carriers (carrier_id),
-  FOREIGN KEY (service_level_id) REFERENCES service_levels (service_level_id),
-  FOREIGN KEY (origin_facility_id) REFERENCES facilities (facility_id),
-  FOREIGN KEY (destination_facility_id) REFERENCES facilities (facility_id),
-  FOREIGN KEY (planned_route_id) REFERENCES routes (route_id),
-  FOREIGN KEY (current_route_id) REFERENCES routes (route_id),
-  FOREIGN KEY (route_change_at_facility_id) REFERENCES facilities (facility_id),
-  FOREIGN KEY (route_change_from_route_id) REFERENCES routes (route_id),
-  FOREIGN KEY (route_change_to_route_id) REFERENCES routes (route_id)
+  FOREIGN KEY (carrier_id) REFERENCES carriers (carrier_id) DEFERRABLE INITIALLY DEFERRED,
+  FOREIGN KEY (service_level_id) REFERENCES service_levels (service_level_id) DEFERRABLE INITIALLY DEFERRED,
+  FOREIGN KEY (origin_facility_id) REFERENCES facilities (facility_id) DEFERRABLE INITIALLY DEFERRED,
+  FOREIGN KEY (destination_facility_id) REFERENCES facilities (facility_id) DEFERRABLE INITIALLY DEFERRED,
+  FOREIGN KEY (planned_route_id) REFERENCES routes (route_id) DEFERRABLE INITIALLY DEFERRED,
+  FOREIGN KEY (current_route_id) REFERENCES routes (route_id) DEFERRABLE INITIALLY DEFERRED,
+  FOREIGN KEY (route_change_at_facility_id) REFERENCES facilities (facility_id) DEFERRABLE INITIALLY DEFERRED,
+  FOREIGN KEY (route_change_from_route_id) REFERENCES routes (route_id) DEFERRABLE INITIALLY DEFERRED,
+  FOREIGN KEY (route_change_to_route_id) REFERENCES routes (route_id) DEFERRABLE INITIALLY DEFERRED
 );
 
 CREATE TABLE shipment_legs (
@@ -165,10 +166,10 @@ CREATE TABLE shipment_legs (
   delay_breakdown_weather_minutes NUMERIC,
   delay_breakdown_carrier_minutes NUMERIC,
   cancelled_at TIMESTAMP,
-  FOREIGN KEY (shipment_id) REFERENCES shipments (shipment_id),
-  FOREIGN KEY (route_id) REFERENCES routes (route_id),
-  FOREIGN KEY (from_facility_id) REFERENCES facilities (facility_id),
-  FOREIGN KEY (to_facility_id) REFERENCES facilities (facility_id)
+  FOREIGN KEY (shipment_id) REFERENCES shipments (shipment_id) DEFERRABLE INITIALLY DEFERRED,
+  FOREIGN KEY (route_id) REFERENCES routes (route_id) DEFERRABLE INITIALLY DEFERRED,
+  FOREIGN KEY (from_facility_id) REFERENCES facilities (facility_id) DEFERRABLE INITIALLY DEFERRED,
+  FOREIGN KEY (to_facility_id) REFERENCES facilities (facility_id) DEFERRABLE INITIALLY DEFERRED
 );
 
 CREATE TABLE tracking_events (
@@ -186,11 +187,11 @@ CREATE TABLE tracking_events (
   route_change_from_route_id TEXT,
   route_change_to_route_id TEXT,
   route_change_reason TEXT,
-  FOREIGN KEY (shipment_id) REFERENCES shipments (shipment_id),
-  FOREIGN KEY (leg_id) REFERENCES shipment_legs (leg_id),
-  FOREIGN KEY (facility_id) REFERENCES facilities (facility_id),
-  FOREIGN KEY (route_change_from_route_id) REFERENCES routes (route_id),
-  FOREIGN KEY (route_change_to_route_id) REFERENCES routes (route_id)
+  FOREIGN KEY (shipment_id) REFERENCES shipments (shipment_id) DEFERRABLE INITIALLY DEFERRED,
+  FOREIGN KEY (leg_id) REFERENCES shipment_legs (leg_id) DEFERRABLE INITIALLY DEFERRED,
+  FOREIGN KEY (facility_id) REFERENCES facilities (facility_id) DEFERRABLE INITIALLY DEFERRED,
+  FOREIGN KEY (route_change_from_route_id) REFERENCES routes (route_id) DEFERRABLE INITIALLY DEFERRED,
+  FOREIGN KEY (route_change_to_route_id) REFERENCES routes (route_id) DEFERRABLE INITIALLY DEFERRED
 );
 
 CREATE TABLE eta_estimates (
@@ -224,10 +225,10 @@ CREATE TABLE eta_estimates (
   evaluation_error_minutes NUMERIC,
   evaluation_abs_error_minutes NUMERIC,
   evaluation_horizon_minutes NUMERIC,
-  FOREIGN KEY (shipment_id) REFERENCES shipments (shipment_id),
-  FOREIGN KEY (position_route_id) REFERENCES routes (route_id),
-  FOREIGN KEY (position_facility_id) REFERENCES facilities (facility_id),
-  FOREIGN KEY (watermark_last_event_id) REFERENCES tracking_events (event_id)
+  FOREIGN KEY (shipment_id) REFERENCES shipments (shipment_id) DEFERRABLE INITIALLY DEFERRED,
+  FOREIGN KEY (position_route_id) REFERENCES routes (route_id) DEFERRABLE INITIALLY DEFERRED,
+  FOREIGN KEY (position_facility_id) REFERENCES facilities (facility_id) DEFERRABLE INITIALLY DEFERRED,
+  FOREIGN KEY (watermark_last_event_id) REFERENCES tracking_events (event_id) DEFERRABLE INITIALLY DEFERRED
 );
 
 CREATE TABLE delay_reasons (
@@ -239,7 +240,7 @@ CREATE TABLE delay_reasons (
   shipment_delay_minutes NUMERIC,
   is_primary BOOLEAN,
   rule_version TEXT,
-  FOREIGN KEY (shipment_id) REFERENCES shipments (shipment_id)
+  FOREIGN KEY (shipment_id) REFERENCES shipments (shipment_id) DEFERRABLE INITIALLY DEFERRED
 );
 
 CREATE TABLE ground_truth (
@@ -259,8 +260,8 @@ CREATE TABLE ground_truth (
   as_of TIMESTAMP,
   label_rule_version TEXT,
   rationale TEXT,
-  FOREIGN KEY (shipment_id) REFERENCES shipments (shipment_id),
-  FOREIGN KEY (eta_at_as_of_id) REFERENCES eta_estimates (eta_id)
+  FOREIGN KEY (shipment_id) REFERENCES shipments (shipment_id) DEFERRABLE INITIALLY DEFERRED,
+  FOREIGN KEY (eta_at_as_of_id) REFERENCES eta_estimates (eta_id) DEFERRABLE INITIALLY DEFERRED
 );
 
 CREATE TABLE route_stops (
@@ -268,8 +269,8 @@ CREATE TABLE route_stops (
   sequence INTEGER NOT NULL,
   facility_id TEXT NOT NULL,
   PRIMARY KEY (route_id, sequence),
-  FOREIGN KEY (route_id) REFERENCES routes (route_id),
-  FOREIGN KEY (facility_id) REFERENCES facilities (facility_id)
+  FOREIGN KEY (route_id) REFERENCES routes (route_id) DEFERRABLE INITIALLY DEFERRED,
+  FOREIGN KEY (facility_id) REFERENCES facilities (facility_id) DEFERRABLE INITIALLY DEFERRED
 );
 
 CREATE TABLE route_legs (
@@ -281,49 +282,49 @@ CREATE TABLE route_legs (
   planned_ground_minutes NUMERIC NOT NULL,
   planned_air_minutes NUMERIC,
   PRIMARY KEY (route_id, sequence),
-  FOREIGN KEY (route_id) REFERENCES routes (route_id),
-  FOREIGN KEY (from_facility_id) REFERENCES facilities (facility_id),
-  FOREIGN KEY (to_facility_id) REFERENCES facilities (facility_id)
+  FOREIGN KEY (route_id) REFERENCES routes (route_id) DEFERRABLE INITIALLY DEFERRED,
+  FOREIGN KEY (from_facility_id) REFERENCES facilities (facility_id) DEFERRABLE INITIALLY DEFERRED,
+  FOREIGN KEY (to_facility_id) REFERENCES facilities (facility_id) DEFERRABLE INITIALLY DEFERRED
 );
 
 CREATE TABLE carrier_service_levels (
   carrier_id TEXT NOT NULL,
   service_level_id TEXT NOT NULL,
   PRIMARY KEY (carrier_id, service_level_id),
-  FOREIGN KEY (carrier_id) REFERENCES carriers (carrier_id),
-  FOREIGN KEY (service_level_id) REFERENCES service_levels (service_level_id)
+  FOREIGN KEY (carrier_id) REFERENCES carriers (carrier_id) DEFERRABLE INITIALLY DEFERRED,
+  FOREIGN KEY (service_level_id) REFERENCES service_levels (service_level_id) DEFERRABLE INITIALLY DEFERRED
 );
 
 CREATE TABLE weather_event_facilities (
   weather_event_id TEXT NOT NULL,
   facility_id TEXT NOT NULL,
   PRIMARY KEY (weather_event_id, facility_id),
-  FOREIGN KEY (weather_event_id) REFERENCES weather_events (weather_event_id),
-  FOREIGN KEY (facility_id) REFERENCES facilities (facility_id)
+  FOREIGN KEY (weather_event_id) REFERENCES weather_events (weather_event_id) DEFERRABLE INITIALLY DEFERRED,
+  FOREIGN KEY (facility_id) REFERENCES facilities (facility_id) DEFERRABLE INITIALLY DEFERRED
 );
 
 CREATE TABLE facility_queue_weather_events (
   queue_observation_id TEXT NOT NULL,
   weather_event_id TEXT NOT NULL,
   PRIMARY KEY (queue_observation_id, weather_event_id),
-  FOREIGN KEY (queue_observation_id) REFERENCES facility_queues (queue_observation_id),
-  FOREIGN KEY (weather_event_id) REFERENCES weather_events (weather_event_id)
+  FOREIGN KEY (queue_observation_id) REFERENCES facility_queues (queue_observation_id) DEFERRABLE INITIALLY DEFERRED,
+  FOREIGN KEY (weather_event_id) REFERENCES weather_events (weather_event_id) DEFERRABLE INITIALLY DEFERRED
 );
 
 CREATE TABLE shipment_last_mile_weather_events (
   shipment_id TEXT NOT NULL,
   weather_event_id TEXT NOT NULL,
   PRIMARY KEY (shipment_id, weather_event_id),
-  FOREIGN KEY (shipment_id) REFERENCES shipments (shipment_id),
-  FOREIGN KEY (weather_event_id) REFERENCES weather_events (weather_event_id)
+  FOREIGN KEY (shipment_id) REFERENCES shipments (shipment_id) DEFERRABLE INITIALLY DEFERRED,
+  FOREIGN KEY (weather_event_id) REFERENCES weather_events (weather_event_id) DEFERRABLE INITIALLY DEFERRED
 );
 
 CREATE TABLE shipment_leg_weather_events (
   leg_id TEXT NOT NULL,
   weather_event_id TEXT NOT NULL,
   PRIMARY KEY (leg_id, weather_event_id),
-  FOREIGN KEY (leg_id) REFERENCES shipment_legs (leg_id),
-  FOREIGN KEY (weather_event_id) REFERENCES weather_events (weather_event_id)
+  FOREIGN KEY (leg_id) REFERENCES shipment_legs (leg_id) DEFERRABLE INITIALLY DEFERRED,
+  FOREIGN KEY (weather_event_id) REFERENCES weather_events (weather_event_id) DEFERRABLE INITIALLY DEFERRED
 );
 
 CREATE TABLE eta_input_events (
@@ -331,32 +332,32 @@ CREATE TABLE eta_input_events (
   position INTEGER NOT NULL,
   event_id TEXT NOT NULL,
   PRIMARY KEY (eta_id, position),
-  FOREIGN KEY (eta_id) REFERENCES eta_estimates (eta_id),
-  FOREIGN KEY (event_id) REFERENCES tracking_events (event_id)
+  FOREIGN KEY (eta_id) REFERENCES eta_estimates (eta_id) DEFERRABLE INITIALLY DEFERRED,
+  FOREIGN KEY (event_id) REFERENCES tracking_events (event_id) DEFERRABLE INITIALLY DEFERRED
 );
 
 CREATE TABLE eta_ignored_events (
   eta_id TEXT NOT NULL,
   event_id TEXT NOT NULL,
   PRIMARY KEY (eta_id, event_id),
-  FOREIGN KEY (eta_id) REFERENCES eta_estimates (eta_id),
-  FOREIGN KEY (event_id) REFERENCES tracking_events (event_id)
+  FOREIGN KEY (eta_id) REFERENCES eta_estimates (eta_id) DEFERRABLE INITIALLY DEFERRED,
+  FOREIGN KEY (event_id) REFERENCES tracking_events (event_id) DEFERRABLE INITIALLY DEFERRED
 );
 
 CREATE TABLE eta_queue_observations (
   eta_id TEXT NOT NULL,
   queue_observation_id TEXT NOT NULL,
   PRIMARY KEY (eta_id, queue_observation_id),
-  FOREIGN KEY (eta_id) REFERENCES eta_estimates (eta_id),
-  FOREIGN KEY (queue_observation_id) REFERENCES facility_queues (queue_observation_id)
+  FOREIGN KEY (eta_id) REFERENCES eta_estimates (eta_id) DEFERRABLE INITIALLY DEFERRED,
+  FOREIGN KEY (queue_observation_id) REFERENCES facility_queues (queue_observation_id) DEFERRABLE INITIALLY DEFERRED
 );
 
 CREATE TABLE eta_weather_events (
   eta_id TEXT NOT NULL,
   weather_event_id TEXT NOT NULL,
   PRIMARY KEY (eta_id, weather_event_id),
-  FOREIGN KEY (eta_id) REFERENCES eta_estimates (eta_id),
-  FOREIGN KEY (weather_event_id) REFERENCES weather_events (weather_event_id)
+  FOREIGN KEY (eta_id) REFERENCES eta_estimates (eta_id) DEFERRABLE INITIALLY DEFERRED,
+  FOREIGN KEY (weather_event_id) REFERENCES weather_events (weather_event_id) DEFERRABLE INITIALLY DEFERRED
 );
 
 CREATE TABLE eta_remaining_facilities (
@@ -364,31 +365,31 @@ CREATE TABLE eta_remaining_facilities (
   position INTEGER NOT NULL,
   facility_id TEXT NOT NULL,
   PRIMARY KEY (eta_id, position),
-  FOREIGN KEY (eta_id) REFERENCES eta_estimates (eta_id),
-  FOREIGN KEY (facility_id) REFERENCES facilities (facility_id)
+  FOREIGN KEY (eta_id) REFERENCES eta_estimates (eta_id) DEFERRABLE INITIALLY DEFERRED,
+  FOREIGN KEY (facility_id) REFERENCES facilities (facility_id) DEFERRABLE INITIALLY DEFERRED
 );
 
 CREATE TABLE delay_evidence_legs (
   delay_id TEXT NOT NULL,
   leg_id TEXT NOT NULL,
   PRIMARY KEY (delay_id, leg_id),
-  FOREIGN KEY (delay_id) REFERENCES delay_reasons (delay_id),
-  FOREIGN KEY (leg_id) REFERENCES shipment_legs (leg_id)
+  FOREIGN KEY (delay_id) REFERENCES delay_reasons (delay_id) DEFERRABLE INITIALLY DEFERRED,
+  FOREIGN KEY (leg_id) REFERENCES shipment_legs (leg_id) DEFERRABLE INITIALLY DEFERRED
 );
 
 CREATE TABLE delay_evidence_facilities (
   delay_id TEXT NOT NULL,
   facility_id TEXT NOT NULL,
   PRIMARY KEY (delay_id, facility_id),
-  FOREIGN KEY (delay_id) REFERENCES delay_reasons (delay_id),
-  FOREIGN KEY (facility_id) REFERENCES facilities (facility_id)
+  FOREIGN KEY (delay_id) REFERENCES delay_reasons (delay_id) DEFERRABLE INITIALLY DEFERRED,
+  FOREIGN KEY (facility_id) REFERENCES facilities (facility_id) DEFERRABLE INITIALLY DEFERRED
 );
 
 CREATE TABLE delay_evidence_weather_events (
   delay_id TEXT NOT NULL,
   weather_event_id TEXT NOT NULL,
   PRIMARY KEY (delay_id, weather_event_id),
-  FOREIGN KEY (delay_id) REFERENCES delay_reasons (delay_id),
-  FOREIGN KEY (weather_event_id) REFERENCES weather_events (weather_event_id)
+  FOREIGN KEY (delay_id) REFERENCES delay_reasons (delay_id) DEFERRABLE INITIALLY DEFERRED,
+  FOREIGN KEY (weather_event_id) REFERENCES weather_events (weather_event_id) DEFERRABLE INITIALLY DEFERRED
 );
 

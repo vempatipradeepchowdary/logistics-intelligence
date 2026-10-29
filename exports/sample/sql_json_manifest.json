@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-29T04:21:39.447Z",
+  "generatedAt": "2026-10-29T04:52:39.832Z",
   "source": "exports/sample/*.csv",
   "tables": 27,
   "bridgeTables": [
@@ -132,7 +132,7 @@
   "files": [
     {
       "file": "sql/schema.sql",
-      "sha256": "df68d40675cc843928fecc75e8b8ebe9fdf7c1bd14080ac5fabc17a096585602"
+      "sha256": "0fe935d7b7bac97c896c1bf21100e3b5fcb7fab02b01547d25ae51663ff9dc16"
     },
     {
       "file": "sql/seed.sql",
