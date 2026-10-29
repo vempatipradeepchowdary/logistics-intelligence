@@ -1,0 +1,160 @@
+@import '@fontsource-variable/inter';
+@import 'tailwindcss';
+
+/* YottaFlex Intelligence design tokens (light theme). Status and chart colours were validated
+   for contrast and colour-vision separation; status is always paired with an icon + label. */
+@theme {
+  --font-sans: 'Inter Variable', 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: ui-monospace, 'SFMono-Regular', 'Cascadia Mono', Consolas, monospace;
+
+  --color-navy-950: #0b1322;
+  --color-navy-900: #101b2d;
+  --color-navy-800: #17243a;
+  --color-navy-700: #223250;
+  --color-navy-600: #34476b;
+  --color-navy-300: #a7b3c9;
+  --color-navy-200: #c9d2e1;
+
+  --color-cobalt-50: #eef2fe;
+  --color-cobalt-100: #dde6fd;
+  --color-cobalt-200: #bccbfb;
+  --color-cobalt-500: #4a70f6;
+  --color-cobalt-600: #315cf5;
+  --color-cobalt-700: #2347d6;
+  --color-cobalt-800: #1d3bb0;
+
+  --color-canvas: #f4f6fa;
+  --color-surface: #ffffff;
+  --color-subtle: #f8f9fc;
+  --color-ink: #172033;
+  --color-ink-2: #3c475b;
+  --color-muted: #5e6b80;
+  --color-faint: #8a95a8;
+  --color-line: #e1e6ef;
+  --color-line-strong: #cdd5e2;
+
+  --color-good: #00977f;
+  --color-good-ink: #007563;
+  --color-good-soft: #e3f5f1;
+  --color-warn: #c77d0a;
+  --color-warn-ink: #8f5a06;
+  --color-warn-soft: #fbf1df;
+  --color-crit: #d23f57;
+  --color-crit-ink: #ad2a40;
+  --color-crit-soft: #fce9ec;
+  --color-info-soft: #eef2fe;
+
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+
+  --shadow-card: 0 1px 2px rgb(16 27 45 / 0.04), 0 1px 1px rgb(16 27 45 / 0.03);
+  --shadow-pop: 0 8px 24px rgb(16 27 45 / 0.12), 0 2px 6px rgb(16 27 45 / 0.06);
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    @apply bg-canvas text-ink font-sans text-[13.5px] leading-5;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-cobalt-600);
+    outline-offset: 2px;
+  }
+  ::selection {
+    background: var(--color-cobalt-100);
+  }
+}
+
+@layer components {
+  .num {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum' 1, 'ss01' 1;
+  }
+  .id-mono {
+    @apply font-mono text-[12px] tracking-tight;
+    font-variant-numeric: tabular-nums;
+  }
+  .card {
+    @apply bg-surface border border-line rounded-lg shadow-[var(--shadow-card)];
+  }
+  .eyebrow {
+    @apply text-[11px] font-semibold uppercase tracking-[0.06em] text-muted;
+  }
+  .skeleton {
+    @apply rounded-sm bg-line/70;
+    animation: skeleton-pulse 1.4s ease-in-out infinite;
+  }
+  .table-base {
+    @apply w-full border-separate border-spacing-0 text-left;
+  }
+  .table-base th {
+    @apply sticky top-0 z-[1] bg-subtle border-b border-line px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.05em] text-muted whitespace-nowrap;
+  }
+  .table-base td {
+    @apply border-b border-line px-3 py-2 align-middle whitespace-nowrap;
+  }
+  .table-base tbody tr:last-child td {
+    @apply border-b-0;
+  }
+  .table-base tbody tr {
+    @apply transition-colors;
+  }
+  .table-base tbody tr:hover td {
+    @apply bg-subtle;
+  }
+  .field {
+    @apply h-8 w-full rounded-md border border-line-strong bg-surface px-2.5 text-[13px] text-ink placeholder:text-faint transition-colors hover:border-navy-300 focus:border-cobalt-600 focus:outline-none focus:ring-2 focus:ring-cobalt-100 disabled:cursor-not-allowed disabled:bg-subtle disabled:text-faint;
+  }
+}
+
+@keyframes skeleton-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.animate-in {
+  animation: fade-up 220ms ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Recharts: recessive axes and grid in the ink tokens. */
+.recharts-cartesian-axis-tick-value {
+  fill: var(--color-muted);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+.recharts-cartesian-grid line {
+  stroke: var(--color-line);
+}
+.recharts-legend-item-text {
+  color: var(--color-ink-2) !important;
+  font-size: 12px;
+}

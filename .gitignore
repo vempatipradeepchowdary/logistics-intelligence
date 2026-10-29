@@ -1,0 +1,15 @@
+node_modules/
+.env
+.env.*
+!.env.example
+coverage/
+exports/*
+!exports/.gitkeep
+!exports/README.md
+*.log
+.DS_Store
+.vscode/
+frontend/dist/
+frontend/playwright-report/
+frontend/test-results/
+frontend/.env
